@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:qms_client/core/constants/api_endpoints.dart';
 import 'package:qms_client/models/user_session_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -32,5 +33,17 @@ class SessionPreferences {
   Future<void> setBaseUrl({required String baseUrl}) async {
     SharedPreferences prefs = await _initSharedPreferences();
     prefs.setString('baseUrl', baseUrl);
+  }
+
+  Future<String?> getBaseUrl() async {
+    SharedPreferences prefs = await _initSharedPreferences();
+    String? baseUrl = prefs.getString('baseUrl');
+    if (baseUrl != null) {
+      return baseUrl;
+      // UserSession session = UserSession.fromJson(jsonDecode(sessionString));
+      // return session;
+    } else {
+      return ApiUrl.baseUrl;
+    }
   }
 }

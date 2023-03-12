@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:qms_client/view/screens/tv_1.dart';
+import 'package:qms_client/view/screens/splash_screen.dart';
 
 void main() {
   HttpOverrides.global = MyHttpOverrides();
@@ -9,7 +9,7 @@ void main() {
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const SingleDisplayScreen(),
+      home: const SplashScreen(),
       theme: ThemeData(useMaterial3: true, fontFamily: 'Poppins'),
     ),
   );

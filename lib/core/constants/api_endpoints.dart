@@ -1,7 +1,8 @@
 import '../local/shared_prefence.dart';
 
 class ApiUrl {
-  static String baseUrl = "https://192.168.20.40:44362";
+  // static String baseUrl = "https://192.168.20.40:44362";
+  static String baseUrl = "http://202.51.74.187:8182";
 
   static String verifyClientCode = '$baseUrl/api/Caller/VerifyClientCode/{0}';
 //clientID
@@ -15,8 +16,7 @@ class ApiUrl {
   static String getNewTokenNumberUrl =
       "$baseUrl/api/kiosk/GetNewTokenNumber?serviceCenterId={0}&kiosKId={1}&serviceOfferId={2}";
 
-
-        static setNewBaseUrl(String newBaseUrl) {
+  static setNewBaseUrl(String newBaseUrl) {
     baseUrl = newBaseUrl;
     SessionPreferences().setBaseUrl(baseUrl: newBaseUrl);
   }

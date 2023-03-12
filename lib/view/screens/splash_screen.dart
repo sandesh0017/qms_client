@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:qms_client/core/constants/api_endpoints.dart';
 import 'package:qms_client/models/user_session_model.dart';
 import 'package:qms_client/view/screens/configure_screen.dart';
 import 'package:qms_client/view/screens/service_offered_screen.dart';
@@ -17,14 +20,27 @@ class _SplashScreenState extends State<SplashScreen> {
   _checkSession() async {
     UserSession? sessionData = await SessionPreferences().getSession();
     if (sessionData != null) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => const ServiceOfferedScreen()));
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const ServiceOfferedScreen()),
+        (route) => false,
+      );
     } else {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => const ConfigureScreen()));
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const ConfigureScreen()),
+        (route) => false,
+      );
     }
+  }
+
+  _checkBaseUrl() async {
+    String? baseUrl = await SessionPreferences().getBaseUrl();
+
+    if (baseUrl != null) {
+      ApiUrl.baseUrl = baseUrl;
+    }
+    log('checkbaseUrl');
   }
 
   @override
@@ -32,6 +48,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     Future.delayed(const Duration(seconds: 5), () {
       _checkSession();
+      _checkBaseUrl();
     });
   }
 
@@ -45,26 +62,31 @@ class _SplashScreenState extends State<SplashScreen> {
         color: Colors.white,
         alignment: Alignment.center,
         child: SizedBox(
-          width: deviceWidth * 0.4,
+          width: deviceWidth * 0.5,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              const SizedBox(
+                height: 50,
+              ),
               Image.asset(
                 'assets/images/qms_splash_icon.png',
-                // width: deviceWidth * 0.1,
+                width: deviceWidth * 0.2,
                 height: deviceHeight * 0.2,
               ),
-              // const SizedBox(height: 20),
+              const SizedBox(height: 40),
               Container(
-                color: Colors.greenAccent,
+                width: deviceWidth * 0.3,
+                height: deviceHeight * 0.3,
+                constraints: const BoxConstraints(minWidth: 350),
                 child: Image.asset(
+                  filterQuality: FilterQuality.high,
                   'assets/images/q1.png',
                   fit: BoxFit.fill,
-                  width: deviceWidth * 0.75,
-                  height: deviceHeight * 0.3,
                 ),
               ),
+
               // const Text(
               //   'QMS',
               //   style: TextStyle(

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:qms_client/core/constants/colors.dart';
 import 'package:qms_client/core/local/shared_prefence.dart';
 import 'package:qms_client/core/utils/show_custom_snack_bar.dart';
+import 'package:qms_client/view/widgets/alert_dialog.dart';
 
 import '../../models/data_model_model.dart';
 import '../../services/service_offered_services.dart';
@@ -26,6 +28,7 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
   int? kioskIdLocal;
   int? serviceOfferedIdLocal;
   String? serviceCentreName;
+  SessionPreferences sessionPreferences = SessionPreferences();
 
   BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
 
@@ -47,9 +50,9 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
   }
 
   Future<void> getSession() async {
-    var session = await SessionPreferences().getSession();
+    var session = await sessionPreferences.getSession();
     setState(() {
-      serviceCentreIdCodeLocal = int.parse(session!.clientCode!);
+      serviceCentreIdCodeLocal = session!.serviceCentreCode;
       serviceCentreLocal = session.serviceCentreName;
       kioskIdLocal = int.parse(session.koiskIdCode!);
     });
@@ -76,6 +79,9 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
       var result = await ServiceOfferedServices()
           .getNewTokenNumber(serviceCentreId, kioskId, serviceOffereId);
       if (result.data != null) {
+        setState(() {
+          currentToken = result.data!;
+        });
       } else {
         setState(() {
           currentToken = result.data!;
@@ -93,26 +99,29 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         elevation: 0,
-        leadingWidth: 250,
+        leadingWidth: 300,
         toolbarHeight: 150,
         backgroundColor: Colors.transparent,
-        leading: Center(
-          child: RichText(
-            text: TextSpan(
-                text: 'Branch : ',
-                style: const TextStyle(
-                    fontWeight: FontWeight.w300,
-                    fontSize: 25,
-                    color: Colors.black87),
-                children: [
-                  TextSpan(
-                    text: serviceCentreLocal,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w400,
-                        fontSize: 27,
-                        color: Colors.black87),
-                  )
-                ]),
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 0),
+          child: Center(
+            child: RichText(
+              text: TextSpan(
+                  text: 'Branch : ',
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w300,
+                      fontSize: 25,
+                      color: Colors.black87),
+                  children: [
+                    TextSpan(
+                      text: serviceCentreLocal,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 27,
+                          color: Colors.black87),
+                    )
+                  ]),
+            ),
           ),
         ),
         centerTitle: true,
@@ -120,13 +129,30 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(
-                  height: 150,
+              GestureDetector(
+                onDoubleTap: () async {},
+                child: SizedBox(
+                  height: 110,
                   child: Image.asset(
-                    'assets/images/bank_logo.png',
+                    'assets/images/logoo.jpg',
                     fit: BoxFit.fill,
-                  ))
+                  ),
+                ),
+              )
             ]),
+        actions: [
+          IconButton(
+            padding: const EdgeInsets.fromLTRB(0, 0, 50, 0),
+            icon: const Icon(Icons.logout),
+            onPressed: () async {
+              logOutOnPress(context);
+              // Navigator.push(context,
+              //     MaterialPageRoute(builder: (_) => const ConfigureScreen()));
+              // await SessionPreferences().clearSession();
+            },
+            iconSize: 32,
+          )
+        ],
       ),
       body: SafeArea(
         child: Container(
@@ -145,73 +171,80 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    const Text(
-                      'Services',
-                      style: TextStyle(color: Colors.black87, fontSize: 30),
+                    Text(
+                      'Services' '           $currentToken',
+                      style:
+                          const TextStyle(color: Colors.black87, fontSize: 30),
                     ),
                     const SizedBox(
                       height: 20,
                     ),
                     SizedBox(
-                      height: size.height * 0.58,
+                      height: size.height * 0.6,
                       width: size.width * 0.7,
-                      child: GridView.builder(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                                childAspectRatio: 1.8,
-                                crossAxisCount: 3,
-                                mainAxisSpacing: 20,
-                                crossAxisSpacing: 40),
-                        itemCount: serviceOfferedList.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return CustomElevatedButton(
-                            serviceOfferedList: serviceOfferedList[index],
-                            onPressed: () async {
-                              var result = await getNewTokenNumber(
-                                  serviceCentreIdCodeLocal!,
-                                  kioskIdLocal!,
-                                  serviceOfferedList[index].id);
-                              printSample.sample(tokenNum: currentToken ?? 's');
-                            },
-                          );
-                        },
-                      ),
+                      child: serviceOfferedList.isNotEmpty
+                          ? GridView.builder(
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                      childAspectRatio: 2.2,
+                                      crossAxisCount: 3,
+                                      mainAxisSpacing: 20,
+                                      crossAxisSpacing: 40),
+                              itemCount: serviceOfferedList.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return BouncingButton(
+                                  serviceOfferedList: serviceOfferedList[index],
+                                  filledColor: AppColor.primaryColor,
+                                  text: serviceOfferedList[index].name,
+                                  radius: 20,
+                                  onTap: () async {
+                                    var result = await getNewTokenNumber(
+                                        serviceCentreIdCodeLocal!,
+                                        kioskIdLocal!,
+                                        serviceOfferedList[index].id);
+                                    printSample.sample(
+                                        tokenNum: currentToken ?? 'No Token ');
+                                  },
+                                );
+                              },
+                            )
+                          : const Center(child: CircularProgressIndicator()),
                     ),
-                    Text(' Current Token ===>>> $currentToken',
-                        style: const TextStyle(fontSize: 40)),
-                    Text(' service centre ===>>> $serviceCentreIdCodeLocal'),
-                    // DropdownButton(
-                    //     items: _getDeviceItems(),
-                    //     onChanged: (value) => setState(() => _device = value),
-                    //     value: _device),
-                    // Row(
-                    //     crossAxisAlignment: CrossAxisAlignment.center,
-                    //     mainAxisAlignment: MainAxisAlignment.end,
-                    //     children: <Widget>[
-                    //       ElevatedButton(
-                    //           style: ElevatedButton.styleFrom(
-                    //               backgroundColor: Colors.brown),
-                    //           onPressed: () {
-                    //             initPlatformState();
-                    //           },
-                    //           child: const Text('Refresh',
-                    //               style: TextStyle(color: Colors.white))),
-                    //       const SizedBox(width: 20),
-                    //       ElevatedButton(
-                    //           style: ElevatedButton.styleFrom(
-                    //               backgroundColor:
-                    //                   _connected ? Colors.red : Colors.green),
-                    //           onPressed: _connected ? _disconnect : _connect,
-                    //           child: Text(_connected ? 'Disconnect' : 'Connect',
-                    //               style: const TextStyle(color: Colors.white)))
-                    //     ]),
-                    // TextButton.icon(
-                    //   onPressed: () {
-                    //     printSample.sample(tokenNum: currentToken ?? 'C 100 ');
-                    //   },
-                    //   icon: const Icon(Icons.print),
-                    //   label: const Text('Print'),
-                    // )
+                    // Text(' Current Token ===>>> $currentToken',
+                    //     style: const TextStyle(fontSize: 40)),
+                    // Text(' service centre ===>>> $serviceCentreIdCodeLocal'),
+                    DropdownButton(
+                        items: _getDeviceItems(),
+                        onChanged: (value) => setState(() => _device = value),
+                        value: _device),
+                    Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.brown),
+                              onPressed: () {
+                                initPlatformState();
+                              },
+                              child: const Text('Refresh',
+                                  style: TextStyle(color: Colors.white))),
+                          const SizedBox(width: 20),
+                          ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      _connected ? Colors.red : Colors.green),
+                              onPressed: _connected ? _disconnect : _connect,
+                              child: Text(_connected ? 'Disconnect' : 'Connect',
+                                  style: const TextStyle(color: Colors.white)))
+                        ]),
+                    TextButton.icon(
+                      onPressed: () {
+                        printSample.sample(tokenNum: currentToken ?? 'C 100 ');
+                      },
+                      icon: const Icon(Icons.print),
+                      label: const Text('Print'),
+                    )
                   ],
                 ),
               ),

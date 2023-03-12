@@ -34,27 +34,27 @@ class ApiService {
     }
   }
 
-  Future<Map<String, dynamic>> post(String url, Map<String, dynamic> json,
-      {var headers, var token}) async {
-    try {
-      var response = await client.post(
-          Uri.parse(
-              'http://192.168.20.81:21951/api/kiosk/GetNewTokenNumber?serviceCenterId=1&kiosKId=1&serviceOfferId=1'),
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-            'Accept-Encoding': 'gzip',
-          },
-          body: jsonEncode(json));
-      if (response.statusCode == HttpStatus.ok) {
-        return jsonDecode(response.body);
-      }
-    } on SocketException {
-      throw Exception('Server Connection Failed!');
-    } on TimeoutException {
-      throw Exception('Connection Timed Out!');
-    } catch (e) {
-      log('Error: ${e.toString()}');
-    }
-    return {};
-  }
+  // Future<Map<String, dynamic>> post(String url, Map<String, dynamic> json,
+  //     {var headers, var token}) async {
+  //   try {
+  //     var response = await client.post(
+  //         Uri.parse(
+  //             'http://192.168.20.81:21951/api/kiosk/GetNewTokenNumber?serviceCenterId=1&kiosKId=1&serviceOfferId=1'),
+  //         headers: <String, String>{
+  //           'Content-Type': 'application/json; charset=UTF-8',
+  //           'Accept-Encoding': 'gzip',
+  //         },
+  //         body: jsonEncode(json));
+  //     if (response.statusCode == HttpStatus.ok) {
+  //       return jsonDecode(response.body);
+  //     }
+  //   } on SocketException {
+  //     throw Exception('Server Connection Failed!');
+  //   } on TimeoutException {
+  //     throw Exception('Connection Timed Out!');
+  //   } catch (e) {
+  //     log('Error: ${e.toString()}');
+  //   }
+  //   return {};
+  // }
 }
