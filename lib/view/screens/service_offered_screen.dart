@@ -146,9 +146,6 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
             icon: const Icon(Icons.logout),
             onPressed: () async {
               logOutOnPress(context);
-              // Navigator.push(context,
-              //     MaterialPageRoute(builder: (_) => const ConfigureScreen()));
-              // await SessionPreferences().clearSession();
             },
             iconSize: 32,
           )

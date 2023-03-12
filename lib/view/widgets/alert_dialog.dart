@@ -16,8 +16,6 @@ Future<dynamic> logOutOnPress(BuildContext context) {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (_) => const ConfigureScreen()));
                 SessionPreferences().clearSession();
-
-                // Get.offAll(const LoginScreen(), binding: HomeBinding());
               },
               child: const Text('Yes'),
             ),
