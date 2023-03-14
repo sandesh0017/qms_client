@@ -168,7 +168,7 @@ class PosPrinterScreenState extends State<PosPrinterScreen> {
     final profile = await CapabilityProfile.load(name: 'XP-N160I');
     // PaperSize.mm80 or PaperSize.mm58
     final generator = Generator(PaperSize.mm58, profile);
-    bytes += generator.setGlobalCodeTable(' ');
+    bytes += generator.setGlobalCodeTable('CP1252');
     // bytes += generator.text('Your Token is:',
     //     linesAfter: 2,
     //     styles: const PosStyles(
@@ -211,7 +211,7 @@ class PosPrinterScreenState extends State<PosPrinterScreen> {
             align: PosAlign.center,
             height: PosTextSize.size3,
             width: PosTextSize.size3));
-    bytes += generator.text('धन्यवाद आउदै गरनु है त :',
+    bytes += generator.text('टोकन नम्बर :',
         linesAfter: 2,
         styles: const PosStyles(
             align: PosAlign.center,

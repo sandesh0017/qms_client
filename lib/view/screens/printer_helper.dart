@@ -1,12 +1,15 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:esc_pos_utils/esc_pos_utils.dart';
+// import 'package:esc_pos_utils/esc_pos_utils.dart';
+import 'package:esc_pos_utils_plus/esc_pos_utils.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_pos_printer_platform/flutter_pos_printer_platform.dart';
-import 'package:nepali_utils/nepali_utils.dart';
 
 import '../../models/printer_detail.dart';
+
+///
 
 class PrinterHelper {
   var defaultPrinterType = PrinterType.bluetooth;
@@ -149,24 +152,36 @@ class PrinterHelper {
     List<int> bytes = [];
 
     // Xprinter XP-N160I
-    final profile = await CapabilityProfile.load(name: 'CP1252');
+    final profile = await CapabilityProfile.load(name: 'default');
     // PaperSize.mm80 or PaperSize.mm58
     if (currentToken == null) return;
     final generator = Generator(PaperSize.mm58, profile);
-    bytes += generator.setGlobalCodeTable('UTF8');
-    bytes += generator.text(NepaliUnicode.convert("sayau' thu"),
+    bytes += generator.setGlobalCodeTable('CP1252');
+    bytes += generator.text('s',
+        // NepaliUnicode.convert(
+        //   "sayau' thu",
+        // ),
         linesAfter: 2,
         styles: const PosStyles(
+            // codeTable: ,
             align: PosAlign.center,
             height: PosTextSize.size1,
             width: PosTextSize.size1));
-    bytes += generator.text('पोखरा, गण्डकी प्रदेश, नेपाल',
-        linesAfter: 2,
-        styles: const PosStyles(
-            codeTable: 'U+0900..U+097F',
-            align: PosAlign.center,
-            height: PosTextSize.size1,
-            width: PosTextSize.size1));
+    // bytes += generator.text('abc',
+    //     linesAfter: 2,
+    //     styles: const PosStyles(
+    //         // codeTable: 'U+0900..U+097F',
+    //         align: PosAlign.center,
+    //         height: PosTextSize.size1,
+    //         width: PosTextSize.size1));
+
+    //  bytes += generator.image(Image.file(file))    ;
+    // bytes += generator.image();
+    final ByteData data = await rootBundle.load('assets/images/logoo.jpg');
+    final Uint8List imgBytes = data.buffer.asUint8List();
+    Future<Image> image =
+        (await decodeImageFromList(imgBytes)) as Future<Image>;
+    // bytes += generator.image(image);
 
     _printEscPos(bytes, generator);
   }
