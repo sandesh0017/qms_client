@@ -241,6 +241,7 @@ class _BouncingButtonState extends State<BouncingButton>
               child: Center(
                   child: Text(
                 widget.text!,
+                textAlign: TextAlign.center,
                 style: TextStyle(
                     color: widget.textColor,
                     fontSize: widget.textSize,
