@@ -293,7 +293,8 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
                                             kioskIdLocal!,
                                             serviceOfferedList[index].id);
                                         printerHelper.printReceiveTest(
-                                            currentToken: currentToken,
+                                            currentToken:
+                                                currentToken ?? 'CS-0000',
                                             service:
                                                 serviceOfferedList[index].name);
                                       } else {

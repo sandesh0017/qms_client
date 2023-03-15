@@ -44,6 +44,7 @@ dependencies:
   esc_pos_utils: ^1.1.0
   nepali_utils: ^3.0.3
   esc_pos_utils_plus: ^2.0.1+6
+  image: ^3.3.0
 
 dev_dependencies:
   flutter_lints: ^2.0.0
