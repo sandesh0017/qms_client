@@ -6,6 +6,7 @@ import 'package:qms_client/core/constants/api_endpoints.dart';
 import 'package:qms_client/models/user_session_model.dart';
 import 'package:qms_client/view/screens/configure_screen.dart';
 import 'package:qms_client/view/screens/service_offered_screen.dart';
+import 'package:window_manager/window_manager.dart';
 
 import '../../core/local/shared_prefence.dart';
 
@@ -20,15 +21,34 @@ class _SplashScreenState extends State<SplashScreen> {
   _checkSession() async {
     UserSession? sessionData = await SessionPreferences().getSession();
     if (sessionData != null) {
+      // ignore: use_build_context_synchronously
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => const ServiceOfferedScreen()),
+        MaterialPageRoute(builder: (context) {
+          windowManager.waitUntilReadyToShow().then((_) async {
+            windowManager.maximize();
+            // await windowManager.setSize(Size(MediaQuery.of(context).size.width,
+            //     MediaQuery.of(context).size.height));
+            await windowManager.show();
+          });
+          return const ServiceOfferedScreen();
+        }),
         (route) => false,
       );
     } else {
+      // ignore: use_build_context_synchronously
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => const ConfigureScreen()),
+        MaterialPageRoute(builder: (context) {
+          windowManager.waitUntilReadyToShow().then((_) async {
+            windowManager.maximize();
+            // await windowManager.setSize(Size(MediaQuery.of(context).size.width,
+            //     MediaQuery.of(context).size.height));
+            await windowManager.show();
+          });
+
+          return const ConfigureScreen();
+        }),
         (route) => false,
       );
     }

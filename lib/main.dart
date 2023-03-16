@@ -2,9 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:qms_client/view/screens/splash_screen.dart';
+import 'package:window_manager/window_manager.dart';
 
-void main() {
+void main() async {
   HttpOverrides.global = MyHttpOverrides();
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await windowManager.ensureInitialized();
 
   runApp(
     MaterialApp(

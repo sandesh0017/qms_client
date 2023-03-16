@@ -168,7 +168,7 @@ class PosPrinterScreenState extends State<PosPrinterScreen> {
     final profile = await CapabilityProfile.load(name: 'XP-N160I');
     // PaperSize.mm80 or PaperSize.mm58
     final generator = Generator(PaperSize.mm58, profile);
-    bytes += generator.setGlobalCodeTable('CP1252');
+    bytes += generator.setGlobalCodeTable('U+A8E0–U+A8FF');
     // bytes += generator.text('Your Token is:',
     //     linesAfter: 2,
     //     styles: const PosStyles(
@@ -186,37 +186,38 @@ class PosPrinterScreenState extends State<PosPrinterScreen> {
         styles: const PosStyles(
             align: PosAlign.center,
             height: PosTextSize.size1,
+            // codeTable: 'UTF8',
             width: PosTextSize.size1));
-    bytes += generator.text('पोखरा, गण्डकी प्रदेश, नेपाल',
-        linesAfter: 2,
-        styles: const PosStyles(
-            align: PosAlign.center,
-            height: PosTextSize.size1,
-            width: PosTextSize.size1));
-    bytes += generator.text('2020-01-12   04:55 pm',
-        linesAfter: 2,
-        styles: const PosStyles(
-            align: PosAlign.center,
-            height: PosTextSize.size1,
-            width: PosTextSize.size1));
-    bytes += generator.text('टोकन नम्बर :',
-        linesAfter: 2,
-        styles: const PosStyles(
-            align: PosAlign.center,
-            height: PosTextSize.size1,
-            width: PosTextSize.size1));
-    bytes += generator.text(currentToken ?? 'CS-100',
-        styles: const PosStyles(
-            // bold: true,
-            align: PosAlign.center,
-            height: PosTextSize.size3,
-            width: PosTextSize.size3));
-    bytes += generator.text('टोकन नम्बर :',
-        linesAfter: 2,
-        styles: const PosStyles(
-            align: PosAlign.center,
-            height: PosTextSize.size1,
-            width: PosTextSize.size1));
+    // bytes += generator.text('पोखरा, गण्डकी प्रदेश, नेपाल',
+    //     linesAfter: 2,
+    //     styles: const PosStyles(
+    //         align: PosAlign.center,
+    //         height: PosTextSize.size1,
+    //         width: PosTextSize.size1));
+    // bytes += generator.text('2020-01-12   04:55 pm',
+    //     linesAfter: 2,
+    //     styles: const PosStyles(
+    //         align: PosAlign.center,
+    //         height: PosTextSize.size1,
+    //         width: PosTextSize.size1));
+    // bytes += generator.text('टोकन नम्बर :',
+    //     linesAfter: 2,
+    //     styles: const PosStyles(
+    //         align: PosAlign.center,
+    //         height: PosTextSize.size1,
+    //         width: PosTextSize.size1));
+    // bytes += generator.text(currentToken ?? 'CS-100',
+    //     styles: const PosStyles(
+    //         // bold: true,
+    //         align: PosAlign.center,
+    //         height: PosTextSize.size3,
+    //         width: PosTextSize.size3));
+    // bytes += generator.text('टोकन नम्बर :',
+    //     linesAfter: 2,
+    //     styles: const PosStyles(
+    //         align: PosAlign.center,
+    //         height: PosTextSize.size1,
+    //         width: PosTextSize.size1));
 
     _printEscPos(bytes, generator);
   }

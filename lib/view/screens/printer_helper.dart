@@ -1,15 +1,14 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
-// import 'package:esc_pos_utils/esc_pos_utils.dart';
-import 'package:esc_pos_utils_plus/esc_pos_utils.dart';
+import 'package:esc_pos_utils/esc_pos_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_pos_printer_platform/flutter_pos_printer_platform.dart';
-
+import 'package:intl/intl.dart';
+// import 'package:image/image.dart' as img;
 import '../../models/printer_detail.dart';
-
-///
 
 class PrinterHelper {
   var defaultPrinterType = PrinterType.bluetooth;
@@ -148,42 +147,99 @@ class PrinterHelper {
   }
 
   Future printReceiveTest(
-      {String? currentToken, String service = 'No token'}) async {
+      {String currentToken = 'CS-10002', String? service}) async {
+    final DateTime now = DateTime.now();
+    final DateFormat xdate = DateFormat('yyyy-MM-dd');
+    final String date = xdate.format(now);
+    String time = DateFormat("hh:mm:ss").format(now);
     List<int> bytes = [];
 
     // Xprinter XP-N160I
-    final profile = await CapabilityProfile.load(name: 'default');
+    final profile = await CapabilityProfile.load(name: 'XP-N160I');
     // PaperSize.mm80 or PaperSize.mm58
     if (currentToken == null) return;
-    final generator = Generator(PaperSize.mm58, profile);
-    bytes += generator.setGlobalCodeTable('CP1252');
-    bytes += generator.text('s',
-        // NepaliUnicode.convert(
-        //   "sayau' thu",
-        // ),
-        linesAfter: 2,
+    final generator = Generator(PaperSize.mm80, profile);
+    // bytes += generator.setGlobalCodeTable('U+0938');
+    // bytes += generator.text('स',
+    //     linesAfter: 0,
+    //     styles: const PosStyles(
+    //         codeTable: '',
+    //         align: PosAlign.center,
+    //         height: PosTextSize.size2,
+    //         width: PosTextSize.size1));
+    bytes += generator.text('Transport Management Office',
+        linesAfter: 0,
         styles: const PosStyles(
-            // codeTable: ,
+            align: PosAlign.center,
+            height: PosTextSize.size2,
+            width: PosTextSize.size1));
+    bytes += generator.text('Pokhara, Gandaki Province, Nepal',
+        linesAfter: 1,
+        styles: const PosStyles(
             align: PosAlign.center,
             height: PosTextSize.size1,
             width: PosTextSize.size1));
-    // bytes += generator.text('abc',
-    //     linesAfter: 2,
-    //     styles: const PosStyles(
-    //         // codeTable: 'U+0900..U+097F',
-    //         align: PosAlign.center,
-    //         height: PosTextSize.size1,
-    //         width: PosTextSize.size1));
+    bytes += generator.text('DateTime : $date $time',
+        linesAfter: 1,
+        styles: const PosStyles(
+            align: PosAlign.center,
+            height: PosTextSize.size7,
+            width: PosTextSize.size7));
+    bytes += generator.text('Your Token Number:',
+        linesAfter: 0,
+        styles: const PosStyles(
+            align: PosAlign.center,
+            height: PosTextSize.size5,
+            width: PosTextSize.size5));
+    bytes += generator.text(currentToken,
+        linesAfter: 1,
+        styles: const PosStyles(
 
-    //  bytes += generator.image(Image.file(file))    ;
-    // bytes += generator.image();
-    final ByteData data = await rootBundle.load('assets/images/logoo.jpg');
-    final Uint8List imgBytes = data.buffer.asUint8List();
-    Future<Image> image =
-        (await decodeImageFromList(imgBytes)) as Future<Image>;
+            // bold: true,
+            align: PosAlign.center,
+            height: PosTextSize.size3,
+            width: PosTextSize.size3));
+    bytes += generator.text('$service',
+        linesAfter: 1,
+        styles: PosStyles(
+            fontType: PosFontType.values.first,
+            align: PosAlign.center,
+            height: PosTextSize.size1,
+            width: PosTextSize.size1));
+    bytes += generator.text('Thanks for coming !',
+        linesAfter: 0,
+        styles: const PosStyles(
+            align: PosAlign.center,
+            height: PosTextSize.size1,
+            width: PosTextSize.size1));
+    // String assetName = 'assets/images/logoo.jpg';
+    // Uint8List imageBytes = await getImageAssetByteData(assetName);
+    // final image = await ImageLoader.loadFromMemory(imageData);
+    // print(imageBytes);
+    // Image image = Image.memory(imageBytes);
+    // Using `ESC *`//=================================================================
+// final ByteData logoBytes = await rootBundle.load('assets/logo.jpg');
+//     receiptText.addImage(
+//       base64.encode(Uint8List.view(logoBytes.buffer)),
+//       width: 150,
+//     );
+
+    // final ByteData data = await rootBundle.load('assets/logo.png');
+    // final Uint8List imgBytes = data.buffer.asUint8List();
+    // final Image image = img.decodeImage(imgBytes)!;
     // bytes += generator.image(image);
+// bytes += generator.image();
+    //
 
     _printEscPos(bytes, generator);
+  }
+  // Future<Image> decodeImage(ByteData data) {
+  //   return decodeImageFromList(data.buffer.asUint8List());
+  // }
+
+  Future<Uint8List> getImageAssetByteData(String assetName) async {
+    final byteData = await rootBundle.load(assetName);
+    return byteData.buffer.asUint8List();
   }
 
   /// print ticket
@@ -283,5 +339,38 @@ class PrinterHelper {
     _subscriptionUsbStatus?.cancel();
     _portController.dispose();
     _ipController.dispose();
+  }
+
+  String toNepali(String input) {
+    final Map<String, String> nepaliDigits = {
+      '0': 'o',
+      '1': '१',
+      '2': '२',
+      '3': '३',
+      '4': '४',
+      '5': '५',
+      '6': '६',
+      '7': '७',
+      '8': '८',
+      '9': '९',
+    };
+
+    final List<String> parts = input.split('-');
+    log('parts==>$parts');
+    final StringBuffer buffer = StringBuffer();
+    log('buffer==>$buffer');
+
+    var writebufffer = buffer.write(parts[0]);
+    buffer.write('-');
+
+    final String digits = parts[1];
+    log('digitsssss$digits');
+    for (int i = 0; i < digits.length; i++) {
+      final String digit = digits[i];
+      log('digit$digit');
+      buffer.write(nepaliDigits[digit]);
+    }
+    log('bufferTOOSTring${buffer.toString()}');
+    return buffer.toString();
   }
 }

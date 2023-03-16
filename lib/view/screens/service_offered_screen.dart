@@ -130,24 +130,6 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
               scale: 1,
             ),
           ),
-          // RichText(
-          //   text: TextSpan(
-          //       text: 'Branch : ',
-          //       style: const TextStyle(
-          //           fontWeight: FontWeight.w300,
-          //           fontSize: 25,
-          //           color: Colors.black87),
-          //       children: [
-          //         TextSpan(
-          //           text: serviceCentreLocal,
-          //           style: const TextStyle(
-          //               fontWeight: FontWeight.w400,
-          //               fontSize: 27,
-          //               color: Colors.black87),
-          //         )
-          //       ]),
-          // ),
-          // ),
         ),
         centerTitle: true,
         title: RichText(
@@ -179,39 +161,6 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
                     style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
                 ])),
-//         title: const Text(
-//           '''प्रदेश सरकार
-// भौतिक पूर्वाधार विकास मन्त्रालय
-// यातायात व्यवस्था कार्यालय
-// सवारी चालक अनुमतिपत्र
-// पोखरा, कास्की जिल्ला, गण्डकी प्रदेश, नेपाल''',
-//           textAlign: TextAlign.center,
-//           style: TextStyle(
-//             color: Colors.white,
-//             fontSize: 16,
-//           ),
-//         ),
-/////////////////////////////////////////////////////////////////////////////////..............//////////////////////////
-        // Row(
-        //     mainAxisSize: MainAxisSize.min,
-        //     mainAxisAlignment: MainAxisAlignment.center,
-        //     children: [
-        //       GestureDetector(
-        //         onDoubleTap: () {
-        //           Navigator.push(
-        //               context,
-        //               MaterialPageRoute(
-        //                   builder: (_) => const PosPrinterScreen()));
-        //         },
-        //         child: SizedBox(
-        //           height: 110,
-        //           child: Image.asset(
-        //             'assets/images/logo.png',
-        //             fit: BoxFit.fill,
-        //           ),
-        //         ),
-        //       )
-        //     ]),
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -224,17 +173,6 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
             padding: const EdgeInsets.all(32.0),
             child: Image.asset('assets/animations/flag.gif'),
           ),
-          // IconButton(
-          //   padding: const EdgeInsets.fromLTRB(0, 0, 50, 0),
-          //   icon: const Icon(Icons.logout),
-          //   onPressed: () async {
-          //     logOutOnPress(context);
-          //     // Navigator.push(context,
-          //     //     MaterialPageRoute(builder: (_) => const ConfigureScreen()));
-          //     // await SessionPreferences().clearSession();
-          //   },
-          //   iconSize: 32,
-          // )
         ],
       ),
       body: SafeArea(
@@ -258,17 +196,16 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      Text(
-                        'Services' '           $currentToken',
-                        style: const TextStyle(
-                            color: Colors.black87, fontSize: 30),
+                      const Text(
+                        'Services',
+                        style: TextStyle(color: Colors.black87, fontSize: 30),
                       ),
                       const SizedBox(
-                        height: 20,
+                        height: 40,
                       ),
                       SizedBox(
-                        height: size.height * 0.6,
-                        width: size.width * 0.7,
+                        height: size.height * 0.7,
+                        width: size.width * 0.6,
                         child: serviceOfferedList.isNotEmpty
                             ? GridView.builder(
                                 gridDelegate:
@@ -293,7 +230,8 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
                                             kioskIdLocal!,
                                             serviceOfferedList[index].id);
                                         printerHelper.printReceiveTest(
-                                            currentToken: currentToken,
+                                            currentToken:
+                                                currentToken ?? 'CS-0000',
                                             service:
                                                 serviceOfferedList[index].name);
                                       } else {
@@ -372,7 +310,14 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
                         MaterialPageRoute(
                             builder: (_) => const PosPrinterScreen()));
                   },
-                  icon: const Icon(Icons.print)))
+                  icon: const Icon(Icons.print))),
+          Positioned(
+              right: 42,
+              bottom: 80,
+              child: Text(
+                currentToken!,
+                style: const TextStyle(color: Colors.grey),
+              ))
         ]),
       ),
     );
