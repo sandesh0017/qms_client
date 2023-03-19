@@ -41,6 +41,7 @@ class PosPrinterScreenState extends State<PosPrinterScreen> {
   final _portController = TextEditingController();
   PrinterDetail? selectedPrinter;
 
+  var latestPrinter = SessionPreferences().getPrinterDetails();
   @override
   void initState() {
     printKey = GlobalKey();
@@ -324,6 +325,25 @@ class PosPrinterScreenState extends State<PosPrinterScreen> {
           'Select Printer',
           style: TextStyle(color: AppColor.primaryColor, fontSize: 28),
         ),
+        actions: [
+          if (latestPrinter != null)
+            Text(
+              // '${selectedPrinter!.deviceName
+              // }      ',
+              '$latestPrinter',
+              style: TextStyle(color: Colors.grey.shade200),
+            )
+          else
+            Text(
+              'not Select',
+              style: TextStyle(color: Colors.grey.shade200),
+            ),
+          IconButton(
+              onPressed: () async {
+                await SessionPreferences().clearPrinterSession();
+              },
+              icon: const Icon(Icons.clear)),
+        ],
         centerTitle: true,
       ),
       body: Center(

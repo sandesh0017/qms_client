@@ -76,6 +76,15 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     double deviceWidth = MediaQuery.of(context).size.width;
     double deviceHeight = MediaQuery.of(context).size.height;
+    // windowManager.waitUntilReadyToShow().then((_) async {
+    //   // windowManager.maximize();
+    //   await windowManager.setTitleBarStyle(TitleBarStyle.hidden);
+
+    //   windowManager.center();
+    //   windowManager.setSkipTaskbar(true);
+    //   await windowManager.setSize(const Size(1000, 600));
+    //   await windowManager.show();
+    // });
 
     return Scaffold(
       body: Container(

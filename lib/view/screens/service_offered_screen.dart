@@ -63,6 +63,7 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
   }
 
   Future<void> getPrinterDetails() async {
+    printerHelper.scan();
     var printerDetail = await sessionPreferences.getPrinterDetails();
     if (printerDetail == null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -205,7 +206,7 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
                       ),
                       SizedBox(
                         height: size.height * 0.7,
-                        width: size.width * 0.6,
+                        width: size.width * 0.75,
                         child: serviceOfferedList.isNotEmpty
                             ? GridView.builder(
                                 gridDelegate:
@@ -316,7 +317,7 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
               bottom: 80,
               child: Text(
                 currentToken!,
-                style: const TextStyle(color: Colors.grey),
+                style: TextStyle(color: Colors.grey.shade300),
               ))
         ]),
       ),
