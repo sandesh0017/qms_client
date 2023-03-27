@@ -2,7 +2,8 @@ import '../local/shared_prefence.dart';
 
 class ApiUrl {
   // static String baseUrl = "https://192.168.20.40:44362";
-  static String baseUrl = "http://202.51.74.187:8182";
+  static String baseUrl = "https://192.168.1.167:44362";
+  // static String baseUrl = "http://10.8.7.93";
 
   static String verifyClientCode = '$baseUrl/api/Caller/VerifyClientCode/{0}';
 //clientID

@@ -174,13 +174,13 @@ class PrinterHelper {
             height: PosTextSize.size2,
             width: PosTextSize.size1));
     bytes += generator.text('Pokhara, Gandaki Province, Nepal',
-        linesAfter: 1,
+        linesAfter: 0,
         styles: const PosStyles(
             align: PosAlign.center,
             height: PosTextSize.size1,
             width: PosTextSize.size1));
     bytes += generator.text('DateTime : $date $time',
-        linesAfter: 1,
+        linesAfter: 0,
         styles: const PosStyles(
             align: PosAlign.center,
             height: PosTextSize.size7,
@@ -191,22 +191,29 @@ class PrinterHelper {
             align: PosAlign.center,
             height: PosTextSize.size5,
             width: PosTextSize.size5));
-    bytes += generator.text(currentToken,
-        linesAfter: 1,
+    bytes += generator.text(currentToken.trim(),
+        linesAfter: 0,
         styles: const PosStyles(
 
             // bold: true,
             align: PosAlign.center,
             height: PosTextSize.size3,
             width: PosTextSize.size3));
-    bytes += generator.text('$service',
-        linesAfter: 1,
+    bytes += generator.text('*[ $service ]*',
+        linesAfter: 0,
         styles: PosStyles(
             fontType: PosFontType.values.first,
             align: PosAlign.center,
             height: PosTextSize.size1,
             width: PosTextSize.size1));
-    bytes += generator.text('Thanks for coming !',
+    // bytes += generator.text('Thanks for coming!',
+    //     linesAfter: 0,
+    //     styles: const PosStyles(
+    //         align: PosAlign.center,
+    //         height: PosTextSize.size1,
+    //         width: PosTextSize.size1));
+    bytes += generator.text(
+        'Note: Please be present at the office by 2:30 PM for all services',
         linesAfter: 0,
         styles: const PosStyles(
             align: PosAlign.center,

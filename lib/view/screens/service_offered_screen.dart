@@ -137,28 +137,29 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
             textAlign: TextAlign.center,
             // textDirection: ,
             text: const TextSpan(
-                text: 'प्रदेश सरकार\nभौतिक पूर्वाधार विकास मन्त्रालय\n',
+                text: 'गण्डकी सरकार\n',
                 style: TextStyle(
                     color: Colors.white,
                     fontSize: 17,
                     fontWeight: FontWeight.w500),
                 children: [
                   TextSpan(
-                    text: 'यातायात व्यवस्था कार्यालय\n',
+                    text:
+                        'भौतिक पूर्वाधार विकास तथा यातायात व्यवस्था मन्त्रालय\n',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 19,
                         fontWeight: FontWeight.w600),
                   ),
                   TextSpan(
-                    text: 'सवारी चालक अनुमतिपत्र\n',
+                    text: 'यातायात व्यवस्था कार्यालय सवारी चालक अनुमतिपत्र\n',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 22,
                         fontWeight: FontWeight.w600),
                   ),
                   TextSpan(
-                    text: ' पोखरा, कास्की जिल्ला, गण्डकी प्रदेश, नेपाल',
+                    text: 'कास्की\nगण्डकी प्रदेश, नेपाल',
                     style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
                 ])),
