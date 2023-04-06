@@ -1,7 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:qms_client/core/constants/colors.dart';
 import 'package:qms_client/core/local/shared_prefence.dart';
 import 'package:qms_client/core/utils/show_custom_snack_bar.dart';
@@ -31,6 +30,7 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
   int? serviceOfferedIdLocal;
   String? serviceCentreName;
   SessionPreferences sessionPreferences = SessionPreferences();
+  bool receiveNewToken = true;
 
   BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
   //list of bluetooth devices
@@ -110,10 +110,6 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final DateTime now = DateTime.now();
-    final DateFormat eDate = DateFormat('yyyy-MM-dd');
-    final String excelDate = eDate.format(now);
-    String excelTime = DateFormat("hh:mm:ss").format(now);
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -224,24 +220,31 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
                                     filledColor: AppColor.primaryColor,
                                     text: serviceOfferedList[index].name,
                                     radius: 20,
-                                    onTap: () async {
-                                      if (printerHelper.selectedPrinter !=
-                                          null) {
-                                        var result = await getNewTokenNumber(
-                                            serviceCentreIdCodeLocal!,
-                                            kioskIdLocal!,
-                                            serviceOfferedList[index].id);
-                                        printerHelper.printReceiveTest(
-                                            currentToken:
-                                                currentToken ?? 'CS-0000',
-                                            service:
-                                                serviceOfferedList[index].name);
-                                      } else {
-                                        showCustomSnackBar(
-                                            context, 'No Printers Connected!',
-                                            taskSuccess: false);
-                                      }
-                                    },
+                                    onTap: receiveNewToken
+                                        ? () async {
+                                            receiveNewToken = false;
+                                            if (printerHelper.selectedPrinter !=
+                                                null) {
+                                              await getNewTokenNumber(
+                                                  serviceCentreIdCodeLocal!,
+                                                  kioskIdLocal!,
+                                                  serviceOfferedList[index].id);
+                                              printerHelper.printReceiveTest(
+                                                  currentToken:
+                                                      currentToken ?? 'CS-0000',
+                                                  service:
+                                                      serviceOfferedList[index]
+                                                          .name);
+                                              receiveNewToken = true;
+                                            } else {
+                                              receiveNewToken = true;
+                                              showCustomSnackBar(context,
+                                                  'No Printers Connected!',
+                                                  taskSuccess: false);
+                                            }
+                                          }
+                                          //////////////
+                                        : () {},
                                   );
                                 },
                               )

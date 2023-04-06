@@ -1,4 +1,5 @@
 // import 'package:flutter/material.dart';
+// import 'package:qms_client/core/constants/colors.dart';
 
 // class SingleDisplayScreen extends StatefulWidget {
 //   const SingleDisplayScreen({super.key});
@@ -23,8 +24,22 @@
 //                 child: Row(
 //                   mainAxisAlignment: MainAxisAlignment.spaceAround,
 //                   children: [
+//                     Padding(
+//                       padding: const EdgeInsets.all(18.0),
+//                       child: Image.asset(
+//                         'assets/images/logo2.png',
+//                         scale: 1,
+//                       ),
+//                     ),
 //                     titleText(title: 'COUNTER'),
 //                     titleText(title: 'TOKEN'),
+//                     Padding(
+//                       padding: const EdgeInsets.all(18.0),
+//                       child: Image.asset(
+//                         'assets/images/logo1.png',
+//                         scale: 1,
+//                       ),
+//                     ),
 //                   ],
 //                 )),
 //             SizedBox(
@@ -57,6 +72,42 @@
 //                 x1: width * 0.57, y1: 0, x2: width * 0.5259, y2: height * 0.2),
 //           ),
 //         ),
+//         Positioned(
+//             right: 0,
+//             bottom: 0,
+//             child: Container(
+//               height: 150,
+//               width: 480,
+//               decoration: const BoxDecoration(
+//                   border: Border(left: BorderSide(), top: BorderSide())),
+//               child: Row(
+//                 mainAxisAlignment: MainAxisAlignment.spaceAround,
+//                 children: [
+//                   Text(
+//                     '''प्रदेश सरकार
+// भौतिक पूर्वाधार विकास मन्त्रालय
+// यातायात व्यवस्था कार्यालय
+// सवारी चालक अनुमतिपत्र
+// पोखरा, कास्की जिल्ला, गण्डकी प्रदेश, नेपाल''',
+//                     style:
+//                         TextStyle(color: AppColor.primaryColor, fontSize: 20),
+//                     textAlign: TextAlign.center,
+//                   ),
+//                   Image.asset(
+//                     'assets/animations/flag.gif',
+//                     scale: 1.5,
+//                   )
+//                 ],
+//               ),
+//             )),
+//         Positioned(
+//             left: 0,
+//             bottom: 0,
+//             child: Container(
+//                 height: 150,
+//                 // color: Colors.amber,
+//                 padding: const EdgeInsetsDirectional.all(1),
+//                 child: Image.asset('assets/images/qlogo.png')))
 //       ]),
 //     );
 //   }

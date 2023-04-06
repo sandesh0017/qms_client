@@ -11,7 +11,7 @@ void main() async {
   await windowManager.ensureInitialized();
 
   windowManager.waitUntilReadyToShow().then((_) async {
-    windowManager.maximize();
+    // windowManager.maximize();
     await windowManager.setTitleBarStyle(TitleBarStyle.hidden);
 
     windowManager.center();
