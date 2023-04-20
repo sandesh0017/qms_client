@@ -167,13 +167,13 @@ class PrinterHelper {
     //         align: PosAlign.center,
     //         height: PosTextSize.size2,
     //         width: PosTextSize.size1));
-    bytes += generator.text('Transport Management Office',
+    bytes += generator.text('Nepal Police Hospital',
         linesAfter: 0,
         styles: const PosStyles(
             align: PosAlign.center,
             height: PosTextSize.size2,
             width: PosTextSize.size1));
-    bytes += generator.text('Pokhara, Gandaki Province, Nepal',
+    bytes += generator.text('Trust, Service & Security',
         linesAfter: 0,
         styles: const PosStyles(
             align: PosAlign.center,
@@ -206,19 +206,19 @@ class PrinterHelper {
             align: PosAlign.center,
             height: PosTextSize.size1,
             width: PosTextSize.size1));
-    // bytes += generator.text('Thanks for coming!',
-    //     linesAfter: 0,
-    //     styles: const PosStyles(
-    //         align: PosAlign.center,
-    //         height: PosTextSize.size1,
-    //         width: PosTextSize.size1));
-    bytes += generator.text(
-        'Note: Please be present at the office by 2:30 PM for all services',
+    bytes += generator.text('Thanks for coming!',
         linesAfter: 0,
         styles: const PosStyles(
             align: PosAlign.center,
             height: PosTextSize.size1,
             width: PosTextSize.size1));
+    // bytes += generator.text(
+    //     'Note: Please be present at the office by 2:30 PM for all services',
+    //     linesAfter: 0,
+    //     styles: const PosStyles(
+    //         align: PosAlign.center,
+    //         height: PosTextSize.size1,
+    //         width: PosTextSize.size1));
     // String assetName = 'assets/images/logoo.jpg';
     // Uint8List imageBytes = await getImageAssetByteData(assetName);
     // final image = await ImageLoader.loadFromMemory(imageData);
