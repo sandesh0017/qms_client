@@ -119,12 +119,12 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
         toolbarHeight: 150,
         backgroundColor: AppColor.secondaryColor,
         leading: SizedBox(
-          height: 10,
+          height: 50,
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8),
             child: Image.asset(
-              'assets/images/logo2.png',
-              scale: 1,
+              'assets/images/police.png',
+              // scale: 1.,
             ),
           ),
         ),
@@ -133,40 +133,22 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
             textAlign: TextAlign.center,
             // textDirection: ,
             text: const TextSpan(
-                text: 'गण्डकी सरकार\n',
+                text: 'नेपाल प्रहरी अस्पताल\n',
                 style: TextStyle(
                     color: Colors.white,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w500),
+                    fontSize: 24,
+                    fontWeight: FontWeight.w600),
                 children: [
+                  // TextSpan(
+                  //   text: '"सत्य, सेवा सुरक्षणम्"',
+                  //   style: TextStyle(color: Colors.white, fontSize: 16),
+                  // ),
                   TextSpan(
-                    text:
-                        'भौतिक पूर्वाधार विकास तथा यातायात व्यवस्था मन्त्रालय\n',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 19,
-                        fontWeight: FontWeight.w600),
-                  ),
-                  TextSpan(
-                    text: 'यातायात व्यवस्था कार्यालय सवारी चालक अनुमतिपत्र\n',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
-                        fontWeight: FontWeight.w600),
-                  ),
-                  TextSpan(
-                    text: 'कास्की\nगण्डकी प्रदेश, नेपाल',
+                    text: '"सत्य, सेवा सुरक्षणम्"',
                     style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
                 ])),
         actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Image.asset(
-              'assets/images/logo1.png',
-              scale: 1,
-            ),
-          ),
           Padding(
             padding: const EdgeInsets.all(32.0),
             child: Image.asset('assets/animations/flag.gif'),
@@ -243,7 +225,7 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
                                                   taskSuccess: false);
                                             }
                                           }
-                                          //////////////
+                                        //////////////
                                         : () {},
                                   );
                                 },
