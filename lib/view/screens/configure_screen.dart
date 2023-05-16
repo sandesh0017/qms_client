@@ -50,7 +50,7 @@ class _ConfigureScreenState extends State<ConfigureScreen> {
               koiskIdCode: selectedKoiskId.toString(),
               serviceCentreCode: selectedServiceCentreCode,
               serviceCentreName: selectedServiceCentre.toString()));
-
+      showCustomSnackBar(context, '$selectedKoiskId Selected Kiosk ID');
       Navigator.push(
           context,
           MaterialPageRoute(

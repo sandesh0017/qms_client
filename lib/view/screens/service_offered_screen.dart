@@ -26,7 +26,7 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
   String? currentToken = '';
   int? serviceCentreIdCodeLocal;
   String? serviceCentreLocal;
-  int? kioskIdLocal;
+  int? kioskIdLocal = 1;
   int? serviceOfferedIdLocal;
   String? serviceCentreName;
   SessionPreferences sessionPreferences = SessionPreferences();
@@ -49,23 +49,26 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
     //printerHelper.selectedPrinter
     //pinter connection huna paryo
 
-    getSession().then((value) {
-      return getServiceOffered(kioskIdLocal!);
-    });
+    // getSession().then((value) {
+    //   return getServiceOffered(kioskIdLocal!);
+    // });
+    getServiceOffered(1);
     getPrinterDetails();
+    // showCustomSnackBar(context, "service off list $serviceOfferedList");
   }
 
-  Future<void> getSession() async {
-    var session = await sessionPreferences.getSession();
-    serviceCentreIdCodeLocal = session!.serviceCentreCode;
-    serviceCentreLocal = session.serviceCentreName;
-    kioskIdLocal = int.parse(session.koiskIdCode!);
-  }
+  // Future<void> getSession() async {
+  //   var session = await sessionPreferences.getSession();
+  //   serviceCentreIdCodeLocal = session!.serviceCentreCode;
+  //   serviceCentreLocal = session.serviceCentreName;
+  //   kioskIdLocal = int.parse(session.koiskIdCode!);
+  // }
 
   Future<void> getPrinterDetails() async {
     printerHelper.scan();
     var printerDetail = await sessionPreferences.getPrinterDetails();
     if (printerDetail == null) {
+      showCustomSnackBar(context, " Printer Detail$printerDetail");
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.push(context,
             MaterialPageRoute(builder: (_) => const PosPrinterScreen()));
@@ -76,8 +79,13 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
 
   Future<void> getServiceOffered(int kioskId) async {
     try {
-      var result = await ServiceOfferedServices().getServiceOffered(kioskId);
+      // var result = await ServiceOfferedServices().getServiceOffered(kioskId);
+      var result = await ServiceOfferedServices().getServiceOffered(1);
+      // showCustomSnackBar(context, "${result}result");
+      // showCustomSnackBar(context, "${result.data}result.data");
+
       if (result.data != null) {
+        // showCustomSnackBar(context, "data not null ");
         setState(() {
           serviceOfferedList.addAll(result.data!);
         });
@@ -93,7 +101,7 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
       int serviceCentreId, int kioskId, int serviceOffereId) async {
     try {
       var result = await ServiceOfferedServices()
-          .getNewTokenNumber(serviceCentreId, kioskId, serviceOffereId);
+          .getNewTokenNumber(1, 1, serviceOffereId);
       if (result.data != null) {
         setState(() {
           currentToken = result.data!;
@@ -225,9 +233,11 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
                                             receiveNewToken = false;
                                             if (printerHelper.selectedPrinter !=
                                                 null) {
-                                              await getNewTokenNumber(
-                                                  serviceCentreIdCodeLocal!,
-                                                  kioskIdLocal!,
+                                              // await getNewTokenNumber(
+                                              //     serviceCentreIdCodeLocal!,
+                                              //     kioskIdLocal!,
+                                              //     serviceOfferedList[index].id);
+                                              await getNewTokenNumber(1, 1,
                                                   serviceOfferedList[index].id);
                                               printerHelper.printReceiveTest(
                                                   currentToken:
@@ -243,7 +253,7 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
                                                   taskSuccess: false);
                                             }
                                           }
-                                          //////////////
+                                        //////////////
                                         : () {},
                                   );
                                 },

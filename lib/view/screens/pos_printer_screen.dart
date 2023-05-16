@@ -120,6 +120,8 @@ class PosPrinterScreenState extends State<PosPrinterScreen> {
         typePrinter: defaultPrinterType,
       ));
       setState(() {});
+      log('pid$device');
+      log('vid${device.vendorId}');
     });
   }
 
@@ -169,7 +171,7 @@ class PosPrinterScreenState extends State<PosPrinterScreen> {
     final profile = await CapabilityProfile.load(name: 'XP-N160I');
     // PaperSize.mm80 or PaperSize.mm58
     final generator = Generator(PaperSize.mm58, profile);
-    bytes += generator.setGlobalCodeTable('U+A8E0–U+A8FF');
+    // bytes += generator.setGlobalCodeTable('U+A8E0–U+A8FF');
     // bytes += generator.text('Your Token is:',
     //     linesAfter: 2,
     //     styles: const PosStyles(
@@ -182,7 +184,7 @@ class PosPrinterScreenState extends State<PosPrinterScreen> {
     //         align: PosAlign.center,
     //         height: PosTextSize.size3,
     //         width: PosTextSize.size3));
-    bytes += generator.text('यातायात व्यवस्था कार्यालय',
+    bytes += generator.text('TEst',
         linesAfter: 2,
         styles: const PosStyles(
             align: PosAlign.center,

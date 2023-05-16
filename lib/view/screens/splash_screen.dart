@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:qms_client/core/constants/api_endpoints.dart';
+import 'package:qms_client/core/utils/show_custom_snack_bar.dart';
 import 'package:qms_client/models/user_session_model.dart';
 import 'package:qms_client/view/screens/configure_screen.dart';
 import 'package:qms_client/view/screens/service_offered_screen.dart';
@@ -19,24 +20,44 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   _checkSession() async {
-    UserSession? sessionData = await SessionPreferences().getSession();
-    if (sessionData != null) {
-      // ignore: use_build_context_synchronously
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) {
-          windowManager.waitUntilReadyToShow().then((_) async {
-            windowManager.maximize();
-            // await windowManager.setSize(Size(MediaQuery.of(context).size.width,
-            //     MediaQuery.of(context).size.height));
-            await windowManager.show();
-          });
-          return const ServiceOfferedScreen();
-        }),
-        (route) => false,
-      );
-    } else {
-      // ignore: use_build_context_synchronously
+    try {
+      // _checkBaseUrl();
+      UserSession? sessionData = await SessionPreferences().getSession();
+      showCustomSnackBar(context, "${sessionData}session");
+      if (sessionData != null) {
+        // ignore: use_build_context_synchronously
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) {
+            windowManager.waitUntilReadyToShow().then((_) async {
+              windowManager.maximize();
+              // await windowManager.setSize(Size(MediaQuery.of(context).size.width,
+              //     MediaQuery.of(context).size.height));
+              await windowManager.show();
+            });
+            return const ServiceOfferedScreen();
+          }),
+          (route) => false,
+        );
+      } else {
+        // ignore: use_build_context_synchronously
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) {
+            windowManager.waitUntilReadyToShow().then((_) async {
+              windowManager.maximize();
+              // await windowManager.setSize(Size(MediaQuery.of(context).size.width,
+              //     MediaQuery.of(context).size.height));
+              await windowManager.show();
+            });
+
+            return const ConfigureScreen();
+          }),
+          (route) => false,
+        );
+      }
+    } catch (e) {
+      showCustomSnackBar(context, e.toString());
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) {
@@ -56,20 +77,22 @@ class _SplashScreenState extends State<SplashScreen> {
 
   _checkBaseUrl() async {
     String? baseUrl = await SessionPreferences().getBaseUrl();
+    showCustomSnackBar(context, "${baseUrl!}url");
+    ApiUrl.baseUrl = baseUrl;
+    log("$baseUrl  ");
+    return;
+  }
 
-    if (baseUrl != null) {
-      ApiUrl.baseUrl = baseUrl;
-    }
-    log('checkbaseUrl');
+  checkIntialsValues() {
+    Future.delayed(const Duration(seconds: 5), () {
+      _checkSession();
+    });
   }
 
   @override
   initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 5), () {
-      _checkSession();
-      _checkBaseUrl();
-    });
+    checkIntialsValues();
   }
 
   @override

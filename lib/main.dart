@@ -1,29 +1,28 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:qms_client/view/screens/splash_screen.dart';
-import 'package:window_manager/window_manager.dart';
+import 'package:qms_client/view/screens/service_offered_screen.dart';
 
 void main() async {
-  HttpOverrides.global = MyHttpOverrides();
-  WidgetsFlutterBinding.ensureInitialized();
+  // HttpOverrides.global = MyHttpOverrides();
+  // WidgetsFlutterBinding.ensureInitialized();
 
-  await windowManager.ensureInitialized();
+  // await windowManager.ensureInitialized();
 
-  windowManager.waitUntilReadyToShow().then((_) async {
-    // windowManager.maximize();
-    await windowManager.setTitleBarStyle(TitleBarStyle.hidden);
+  // windowManager.waitUntilReadyToShow().then((_) async {
+  //   // windowManager.maximize();
+  //   await windowManager.setTitleBarStyle(TitleBarStyle.hidden);
 
-    windowManager.center();
-    windowManager.setSkipTaskbar(true);
-    // await windowManager.setSize(const Size(1000, 600));
-    await windowManager.show();
-  });
+  //   windowManager.center();
+  //   windowManager.setSkipTaskbar(true);
+  //   // await windowManager.setSize(const Size(1000, 600));
+  //   await windowManager.show();
+  // });
 
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const SplashScreen(),
+      home: const ServiceOfferedScreen(),
       theme: ThemeData(useMaterial3: true, fontFamily: 'Poppins'),
     ),
   );

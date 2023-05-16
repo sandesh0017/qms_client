@@ -8,7 +8,8 @@ import '../models/mobile_response.dart';
 class ServiceOfferedServices {
   ApiService api = ApiService();
   Future<MobileResponse<List<DataModel>>> getServiceOffered(int kioskId) async {
-    var url = ApiUrl.getServiceOfferedUrl.format(params: [kioskId]);
+    var url = "http://10.8.7.93/api/kiosk/GetServiceOffered/1";
+    // var url = ApiUrl.getServiceOfferedUrl.format(params: [kioskId]);
     var result = await api.get(url);
     var response = MobileResponse<List<DataModel>>.fromJson(result, (json) {
       List data = json;

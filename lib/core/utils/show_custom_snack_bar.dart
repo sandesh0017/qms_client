@@ -18,7 +18,7 @@ showCustomSnackBar(BuildContext context, String msg,
         width: MediaQuery.of(context).size.width / 1.4,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         behavior: SnackBarBehavior.floating,
-        duration: const Duration(milliseconds: 1500),
+        duration: const Duration(seconds: 30),
       ),
     );
 }
