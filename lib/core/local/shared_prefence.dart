@@ -68,4 +68,18 @@ class SessionPreferences {
       return ApiUrl.baseUrl;
     }
   }
+
+  Future<void> setCompanyName({required String companyName})async{
+    SharedPreferences prefs = await _initSharedPreferences();
+    prefs.setString('companyName', companyName);
+  }
+
+   Future<String?> getCompanyName() async {
+    SharedPreferences prefs = await _initSharedPreferences();
+    String? name = prefs.getString('companyName');
+   
+      return name;
+   
+
+  }
 }

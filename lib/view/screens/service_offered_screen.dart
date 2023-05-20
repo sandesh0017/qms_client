@@ -1,6 +1,11 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:developer';
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:qms_client/core/constants/colors.dart';
 import 'package:qms_client/core/local/shared_prefence.dart';
 import 'package:qms_client/core/utils/show_custom_snack_bar.dart';
@@ -31,6 +36,9 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
   String? serviceCentreName;
   SessionPreferences sessionPreferences = SessionPreferences();
   bool receiveNewToken = true;
+  File? fileToDisplay;
+  String? nameToDisplay;
+  TextEditingController companyController = TextEditingController();
 
   BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
   //list of bluetooth devices
@@ -108,6 +116,20 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
     }
   }
 
+  void _filePicker() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform
+          .pickFiles(type: FileType.image, allowMultiple: false);
+      if (result == null) return;
+      PlatformFile file = result.files.first;
+      fileToDisplay = File(file.path.toString());
+
+      setState(() {});
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -117,20 +139,67 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
         elevation: 0,
         leadingWidth: 200,
         toolbarHeight: 150,
-     
+
         backgroundColor: AppColor.nblColor,
-        leading: SizedBox(
-          height: 10,
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Image.asset(
-              'assets/images/nblN.png',
-              scale: 1,
+        leading: GestureDetector(
+          onLongPress: () {
+            _filePicker();
+          },
+          child: SizedBox(
+            height: 10,
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: fileToDisplay == null
+                  ? Image.asset(
+                      'assets/images/nblN.png',
+                      scale: 1,
+                    )
+                  : Image.file(fileToDisplay!),
             ),
           ),
         ),
         centerTitle: true,
-        title: Text('नेपाल बैंक लिमिटेड',style: TextStyle(fontSize: 30,color: Colors.white),),
+        title: GestureDetector(
+          onLongPress: () {
+            showDialog(
+              context: context,
+              barrierDismissible: true,
+              builder: (_) {
+                return AlertDialog(
+                  title: Text('Company Name'),
+                  // content: Text("Please Select Company Name ?"),
+                  content: TextField(
+                    controller: companyController,
+                  ),
+                  actions: [
+                    MaterialButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text("CANCEL"),
+                    ),
+                    MaterialButton(
+                      onPressed: () {
+                        setState(() {
+                          nameToDisplay = companyController.text;
+                        });
+                        sessionPreferences.setCompanyName(
+                            companyName: companyController.text);
+                        Navigator.pop(context);
+                      },
+                      child: Text("OK"),
+                    )
+                  ],
+                );
+              },
+            );
+          },
+          child: Container(
+              child: Text(
+            nameToDisplay ?? 'नेपाल बैंक लिमिटेड',
+            style: TextStyle(fontSize: 30, color: Colors.white),
+          )),
+        ),
         // title: RichText(
         //     textAlign: TextAlign.center,
         //     // textDirection: ,
@@ -200,7 +269,7 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
                                   return BouncingButton(
                                     serviceOfferedList:
                                         serviceOfferedList[index],
-                                    filledColor: AppColor.nblColor  ,
+                                    filledColor: AppColor.nblColor,
                                     text: serviceOfferedList[index].name,
                                     radius: 20,
                                     onTap: receiveNewToken
@@ -271,6 +340,4 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
       ),
     );
   }
-
-
 }
