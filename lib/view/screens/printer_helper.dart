@@ -159,26 +159,14 @@ class PrinterHelper {
     // PaperSize.mm80 or PaperSize.mm58
     if (currentToken == null) return;
     final generator = Generator(PaperSize.mm80, profile);
-    // bytes += generator.setGlobalCodeTable('U+0938');
-    // bytes += generator.text('स',
-    //     linesAfter: 0,
-    //     styles: const PosStyles(
-    //         codeTable: '',
-    //         align: PosAlign.center,
-    //         height: PosTextSize.size2,
-    //         width: PosTextSize.size1));
-    bytes += generator.text('Nepal Police Hospital',
+
+    bytes += generator.text('Nepal Bank Limited',
         linesAfter: 0,
         styles: const PosStyles(
             align: PosAlign.center,
             height: PosTextSize.size2,
             width: PosTextSize.size1));
-    bytes += generator.text('Trust, Service & Security',
-        linesAfter: 0,
-        styles: const PosStyles(
-            align: PosAlign.center,
-            height: PosTextSize.size1,
-            width: PosTextSize.size1));
+  
     bytes += generator.text('DateTime : $date $time',
         linesAfter: 0,
         styles: const PosStyles(
@@ -212,37 +200,10 @@ class PrinterHelper {
             align: PosAlign.center,
             height: PosTextSize.size1,
             width: PosTextSize.size1));
-    // bytes += generator.text(
-    //     'Note: Please be present at the office by 2:30 PM for all services',
-    //     linesAfter: 0,
-    //     styles: const PosStyles(
-    //         align: PosAlign.center,
-    //         height: PosTextSize.size1,
-    //         width: PosTextSize.size1));
-    // String assetName = 'assets/images/logoo.jpg';
-    // Uint8List imageBytes = await getImageAssetByteData(assetName);
-    // final image = await ImageLoader.loadFromMemory(imageData);
-    // print(imageBytes);
-    // Image image = Image.memory(imageBytes);
-    // Using `ESC *`//=================================================================
-// final ByteData logoBytes = await rootBundle.load('assets/logo.jpg');
-//     receiptText.addImage(
-//       base64.encode(Uint8List.view(logoBytes.buffer)),
-//       width: 150,
-//     );
-
-    // final ByteData data = await rootBundle.load('assets/logo.png');
-    // final Uint8List imgBytes = data.buffer.asUint8List();
-    // final Image image = img.decodeImage(imgBytes)!;
-    // bytes += generator.image(image);
-// bytes += generator.image();
-    //
-
+   
     _printEscPos(bytes, generator);
   }
-  // Future<Image> decodeImage(ByteData data) {
-  //   return decodeImageFromList(data.buffer.asUint8List());
-  // }
+
 
   Future<Uint8List> getImageAssetByteData(String assetName) async {
     final byteData = await rootBundle.load(assetName);

@@ -117,36 +117,38 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
         elevation: 0,
         leadingWidth: 200,
         toolbarHeight: 150,
-        backgroundColor: AppColor.secondaryColor,
+     
+        backgroundColor: AppColor.nblColor,
         leading: SizedBox(
           height: 10,
           child: Padding(
             padding: const EdgeInsets.all(12.0),
             child: Image.asset(
-              'assets/images/police.png',
+              'assets/images/nblN.png',
               scale: 1,
             ),
           ),
         ),
         centerTitle: true,
-        title: RichText(
-            textAlign: TextAlign.center,
-            // textDirection: ,
-            text: const TextSpan(
-                text: 'नेपाल प्रहरी अस्पताल\n',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 28,
-                    fontWeight: FontWeight.w500),
-                children: [
-                  TextSpan(
-                    text: '"सत्य, सेवा सुरक्षणम्"\n',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w200),
-                  ),
-                ])),
+        title: Text('नेपाल बैंक लिमिटेड',style: TextStyle(fontSize: 30,color: Colors.white),),
+        // title: RichText(
+        //     textAlign: TextAlign.center,
+        //     // textDirection: ,
+        //     text: const TextSpan(
+        //         text: 'नेपाल प्रहरी अस्पताल\n',
+        //         style: TextStyle(
+        //             color: Colors.white,
+        //             fontSize: 28,
+        //             fontWeight: FontWeight.w500),
+        //         children: [
+        //           TextSpan(
+        //             text: '"सत्य, सेवा सुरक्षणम्"\n',
+        //             style: TextStyle(
+        //                 color: Colors.white,
+        //                 fontSize: 20,
+        //                 fontWeight: FontWeight.w200),
+        //           ),
+        //         ])),
         actions: [
           Padding(
             padding: const EdgeInsets.all(32.0),
@@ -198,7 +200,7 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
                                   return BouncingButton(
                                     serviceOfferedList:
                                         serviceOfferedList[index],
-                                    filledColor: AppColor.primaryColor,
+                                    filledColor: AppColor.nblColor  ,
                                     text: serviceOfferedList[index].name,
                                     radius: 20,
                                     onTap: receiveNewToken
@@ -231,41 +233,6 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
                               )
                             : const Center(child: CircularProgressIndicator()),
                       ),
-                      // Text(' Current Token ===>>> $currentToken',
-                      //     style: const TextStyle(fontSize: 40)),
-                      // Text(' service centre ===>>> $serviceCentreIdCodeLocal'),
-                      // DropdownButton(
-                      //     items: _getDeviceItems(),
-                      //     onChanged: (value) => setState(() => _device = value),
-                      //     value: _device),
-                      // Row(
-                      //     crossAxisAlignment: CrossAxisAlignment.center,
-                      //     mainAxisAlignment: MainAxisAlignment.end,
-                      //     children: <Widget>[
-                      //       ElevatedButton(
-                      //           style: ElevatedButton.styleFrom(
-                      //               backgroundColor: Colors.brown),
-                      //           onPressed: () {
-                      //             // initPlatformState();
-                      //           },
-                      //           child: const Text('Refresh',
-                      //               style: TextStyle(color: Colors.white))),
-                      //       const SizedBox(width: 20),
-                      //       ElevatedButton(
-                      //           style: ElevatedButton.styleFrom(
-                      //               backgroundColor:
-                      //                   _connected ? Colors.red : Colors.green),
-                      //           onPressed: _connected ? _disconnect : _connect,
-                      //           child: Text(_connected ? 'Disconnect' : 'Connect',
-                      //               style: const TextStyle(color: Colors.white)))
-                      //     ]),
-                      // TextButton.icon(
-                      //   onPressed: () {
-                      //     printSample.sample(tokenNum: currentToken ?? 'C 100 ');
-                      //   },
-                      //   icon: const Icon(Icons.print),
-                      //   label: const Text('Print'),
-                      // )
                     ],
                   ),
                 ),
@@ -276,13 +243,9 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
               right: 30,
               top: 20,
               child: IconButton(
-                // padding: const EdgeInsets.fromLTRB(0, 40, 50, 0),
                 icon: const Icon(Icons.logout),
                 onPressed: () async {
                   logOutOnPress(context);
-                  // Navigator.push(context,
-                  //     MaterialPageRoute(builder: (_) => const ConfigureScreen()));
-                  // await SessionPreferences().clearSession();
                 },
                 iconSize: 32,
               )),
@@ -309,57 +272,5 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
     );
   }
 
-///////////////////////////////////////////////////////////////////////
-  ///
-  ///
-  //initializing bluetooth
 
-//   void _connect() {
-//     if (_device != null) {
-//       bluetooth.isConnected.then((isConnected) {
-//         if (isConnected!) {
-//           setState(() {
-//             _connected = true;
-//           });
-//         } else {
-//           bluetooth.connect(_device!).then((value) {
-//             log("$value asd");
-//             setState(() => _connected = true);
-//           }).catchError((error) {
-//             show('Device Already Connected. $error', context: context);
-//             setState(() => _connected = false);
-//           });
-//         }
-//       });
-//     } else {
-//       show('No device selected.', context: context);
-//     }
-//   }
-
-//   void _disconnect() {
-//     bluetooth.disconnect();
-//     setState(() => _connected = false);
-//   }
-
-//   List<DropdownMenuItem<BluetoothDevice>> _getDeviceItems() {
-//     List<DropdownMenuItem<BluetoothDevice>> items = [];
-//     if (_devices.isEmpty) {
-//       items.add(const DropdownMenuItem(child: Text('NONE')));
-//     } else {
-//       for (var device in _devices) {
-//         items.add(
-//             DropdownMenuItem(value: device, child: Text(device.name ?? "")));
-//       }
-//     }
-//     return items;
-//   }
-
-//   Future show(String message,
-//       {Duration duration = const Duration(seconds: 3), context}) async {
-//     await Future.delayed(const Duration(milliseconds: 100));
-//     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-//         content: Text(message, style: const TextStyle(color: Colors.white)),
-//         duration: duration));
-//   }
-// }
 }
