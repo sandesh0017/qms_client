@@ -39,56 +39,6 @@ class PrinterHelper {
 
   PrinterHelper._();
 
-  // initPrinterServices() {
-  //   if (Platform.isWindows) defaultPrinterType = PrinterType.usb;
-  //   _portController.text = _port;
-  //   _scan();
-
-  //   // subscription to listen change status of bluetooth connection
-  //   _subscriptionBtStatus =
-  //       PrinterManager.instance.stateBluetooth.listen((status) {
-  //     log(' ----------------- status bt $status ------------------ ');
-  //     _currentStatus = status;
-  //     if (status == BTStatus.connected) {
-  //       setState(() {
-  //         _isConnected = true;
-  //       });
-  //     }
-  //     if (status == BTStatus.none) {
-  //       setState(() {
-  //         _isConnected = false;
-  //       });
-  //     }
-  //     if (status == BTStatus.connected && pendingTask != null) {
-  //       if (Platform.isAndroid) {
-  //         Future.delayed(const Duration(milliseconds: 1000), () {
-  //           PrinterManager.instance
-  //               .send(type: PrinterType.bluetooth, bytes: pendingTask!);
-  //           pendingTask = null;
-  //         });
-  //       } else if (Platform.isIOS) {
-  //         PrinterManager.instance
-  //             .send(type: PrinterType.bluetooth, bytes: pendingTask!);
-  //         pendingTask = null;
-  //       }
-  //     }
-  //   });
-  //   //  PrinterManager.instance.stateUSB is only supports on Android
-  //   _subscriptionUsbStatus = PrinterManager.instance.stateUSB.listen((status) {
-  //     log(' ----------------- status usb $status ------------------ ');
-  //     currentUsbStatus = status;
-  //     if (Platform.isAndroid) {
-  //       if (status == USBStatus.connected && pendingTask != null) {
-  //         Future.delayed(const Duration(milliseconds: 1000), () {
-  //           PrinterManager.instance
-  //               .send(type: PrinterType.usb, bytes: pendingTask!);
-  //           pendingTask = null;
-  //         });
-  //       }
-  //     }
-  //   });
-  // }
-
   // method to scan devices according PrinterType
   void scan() {
     devices.clear();
@@ -156,17 +106,9 @@ class PrinterHelper {
 
     // Xprinter XP-N160I
     final profile = await CapabilityProfile.load(name: 'XP-N160I');
-    // PaperSize.mm80 or PaperSize.mm58
     if (currentToken == null) return;
     final generator = Generator(PaperSize.mm80, profile);
-    // bytes += generator.setGlobalCodeTable('U+0938');
-    // bytes += generator.text('स',
-    //     linesAfter: 0,
-    //     styles: const PosStyles(
-    //         codeTable: '',
-    //         align: PosAlign.center,
-    //         height: PosTextSize.size2,
-    //         width: PosTextSize.size1));
+
     bytes += generator.text('Transport Management Office',
         linesAfter: 0,
         styles: const PosStyles(
@@ -206,12 +148,6 @@ class PrinterHelper {
             align: PosAlign.center,
             height: PosTextSize.size1,
             width: PosTextSize.size1));
-    // bytes += generator.text('Thanks for coming!',
-    //     linesAfter: 0,
-    //     styles: const PosStyles(
-    //         align: PosAlign.center,
-    //         height: PosTextSize.size1,
-    //         width: PosTextSize.size1));
     bytes += generator.text(
         'Note: Please be present at the office by 2:30 PM for all services',
         linesAfter: 0,
@@ -219,30 +155,9 @@ class PrinterHelper {
             align: PosAlign.center,
             height: PosTextSize.size1,
             width: PosTextSize.size1));
-    // String assetName = 'assets/images/logoo.jpg';
-    // Uint8List imageBytes = await getImageAssetByteData(assetName);
-    // final image = await ImageLoader.loadFromMemory(imageData);
-    // print(imageBytes);
-    // Image image = Image.memory(imageBytes);
-    // Using `ESC *`//=================================================================
-// final ByteData logoBytes = await rootBundle.load('assets/logo.jpg');
-//     receiptText.addImage(
-//       base64.encode(Uint8List.view(logoBytes.buffer)),
-//       width: 150,
-//     );
-
-    // final ByteData data = await rootBundle.load('assets/logo.png');
-    // final Uint8List imgBytes = data.buffer.asUint8List();
-    // final Image image = img.decodeImage(imgBytes)!;
-    // bytes += generator.image(image);
-// bytes += generator.image();
-    //
 
     _printEscPos(bytes, generator);
   }
-  // Future<Image> decodeImage(ByteData data) {
-  //   return decodeImageFromList(data.buffer.asUint8List());
-  // }
 
   Future<Uint8List> getImageAssetByteData(String assetName) async {
     final byteData = await rootBundle.load(assetName);

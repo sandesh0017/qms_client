@@ -7,7 +7,7 @@ import 'package:flutter_pos_printer_platform/flutter_pos_printer_platform.dart';
 import 'package:qms_client/core/constants/colors.dart';
 import 'package:qms_client/view/screens/service_offered_screen.dart';
 
-import '../../core/local/shared_prefence.dart';
+import '../../core/local/storage.dart';
 import '../../models/printer_detail.dart';
 
 late GlobalKey<PosPrinterScreenState> printKey;
@@ -41,7 +41,9 @@ class PosPrinterScreenState extends State<PosPrinterScreen> {
   final _portController = TextEditingController();
   PrinterDetail? selectedPrinter;
 
-  var latestPrinter = SessionPreferences().getPrinterDetails();
+  // var latestPrinter = SessionPreferences().getPrinterDetails();
+  var latestPrinter = HiveHelper().getPrinterHive();
+
   @override
   void initState() {
     printKey = GlobalKey();
@@ -165,61 +167,16 @@ class PosPrinterScreenState extends State<PosPrinterScreen> {
   Future printReceiveTest({String? currentToken}) async {
     List<int> bytes = [];
 
-    // Xprinter XP-N160I
     final profile = await CapabilityProfile.load(name: 'XP-N160I');
-    // PaperSize.mm80 or PaperSize.mm58
+
     final generator = Generator(PaperSize.mm58, profile);
-    bytes += generator.setGlobalCodeTable('U+A8E0–U+A8FF');
-    // bytes += generator.text('Your Token is:',
-    //     linesAfter: 2,
-    //     styles: const PosStyles(
-    //         align: PosAlign.center,
-    //         height: PosTextSize.size1,
-    //         width: PosTextSize.size1));
-    // bytes += generator.text(currentToken ?? 'CS-100',
-    //     styles: const PosStyles(
-    //         // bold: true,
-    //         align: PosAlign.center,
-    //         height: PosTextSize.size3,
-    //         width: PosTextSize.size3));
-    bytes += generator.text('यातायात व्यवस्था कार्यालय',
+    bytes += generator.text('Test 123',
         linesAfter: 2,
         styles: const PosStyles(
             align: PosAlign.center,
             height: PosTextSize.size1,
             // codeTable: 'UTF8',
             width: PosTextSize.size1));
-    // bytes += generator.text('पोखरा, गण्डकी प्रदेश, नेपाल',
-    //     linesAfter: 2,
-    //     styles: const PosStyles(
-    //         align: PosAlign.center,
-    //         height: PosTextSize.size1,
-    //         width: PosTextSize.size1));
-    // bytes += generator.text('2020-01-12   04:55 pm',
-    //     linesAfter: 2,
-    //     styles: const PosStyles(
-    //         align: PosAlign.center,
-    //         height: PosTextSize.size1,
-    //         width: PosTextSize.size1));
-    // bytes += generator.text('टोकन नम्बर :',
-    //     linesAfter: 2,
-    //     styles: const PosStyles(
-    //         align: PosAlign.center,
-    //         height: PosTextSize.size1,
-    //         width: PosTextSize.size1));
-    // bytes += generator.text(currentToken ?? 'CS-100',
-    //     styles: const PosStyles(
-    //         // bold: true,
-    //         align: PosAlign.center,
-    //         height: PosTextSize.size3,
-    //         width: PosTextSize.size3));
-    // bytes += generator.text('टोकन नम्बर :',
-    //     linesAfter: 2,
-    //     styles: const PosStyles(
-    //         align: PosAlign.center,
-    //         height: PosTextSize.size1,
-    //         width: PosTextSize.size1));
-
     _printEscPos(bytes, generator);
   }
 
@@ -330,7 +287,7 @@ class PosPrinterScreenState extends State<PosPrinterScreen> {
             Text(
               // '${selectedPrinter!.deviceName
               // }      ',
-              '$latestPrinter',
+              (latestPrinter!.deviceName) ?? 'null',
               style: TextStyle(color: Colors.grey.shade200),
             )
           else
@@ -340,7 +297,8 @@ class PosPrinterScreenState extends State<PosPrinterScreen> {
             ),
           IconButton(
               onPressed: () async {
-                await SessionPreferences().clearPrinterSession();
+                // await SessionPreferences().clearPrinterSession();
+                HiveHelper().clearPrinterSession();
               },
               icon: const Icon(Icons.clear)),
         ],
@@ -425,13 +383,15 @@ class PosPrinterScreenState extends State<PosPrinterScreen> {
                   onChanged: (PrinterType? value) {
                     setState(() {
                       if (value != null) {
-                        setState(() {
-                          defaultPrinterType = value;
-                          selectedPrinter = null;
-                          _isBle = false;
-                          _isConnected = false;
-                          _scan();
-                        });
+                        setState(
+                          () {
+                            defaultPrinterType = value;
+                            selectedPrinter = null;
+                            _isBle = false;
+                            _isConnected = false;
+                            _scan();
+                          },
+                        );
                       }
                     });
                   },
@@ -490,8 +450,16 @@ class PosPrinterScreenState extends State<PosPrinterScreen> {
                                     child: Text("${device.address}")),
                             onTap: () async {
                               selectDevice(device);
-                              await SessionPreferences()
-                                  .setPrinterDetails(printerDetail: device);
+                              // await SessionPreferences()
+                              // .setPrinterDetails(printerDetail: device);
+                              await HiveHelper().setPrinterHive(
+                                  typePrinter: device.typePrinter,
+                                  address: device.address,
+                                  deviceName: device.deviceName,
+                                  id: device.id,
+                                  isBle: device.isBle,
+                                  productId: device.productId,
+                                  vendorId: device.vendorId);
                             },
                             leading: selectedPrinter != null &&
                                     ((device.typePrinter == PrinterType.usb &&

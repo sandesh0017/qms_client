@@ -1,14 +1,12 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:qms_client/core/constants/api_endpoints.dart';
-import 'package:qms_client/models/user_session_model.dart';
+import 'package:qms_client/core/local/set_session.dart';
 import 'package:qms_client/view/screens/configure_screen.dart';
 import 'package:qms_client/view/screens/service_offered_screen.dart';
 import 'package:window_manager/window_manager.dart';
 
-import '../../core/local/shared_prefence.dart';
+import '../../core/local/storage.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -19,7 +17,8 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   _checkSession() async {
-    UserSession? sessionData = await SessionPreferences().getSession();
+    // UserSession? sessionData = await SessionPreferences().getSession();
+    SetSess? sessionData = await HiveHelper().getSessionHive();
     if (sessionData != null) {
       // ignore: use_build_context_synchronously
       Navigator.pushAndRemoveUntil(
@@ -27,8 +26,7 @@ class _SplashScreenState extends State<SplashScreen> {
         MaterialPageRoute(builder: (context) {
           windowManager.waitUntilReadyToShow().then((_) async {
             windowManager.maximize();
-            // await windowManager.setSize(Size(MediaQuery.of(context).size.width,
-            //     MediaQuery.of(context).size.height));
+
             await windowManager.show();
           });
           return const ServiceOfferedScreen();
@@ -42,8 +40,6 @@ class _SplashScreenState extends State<SplashScreen> {
         MaterialPageRoute(builder: (context) {
           windowManager.waitUntilReadyToShow().then((_) async {
             windowManager.maximize();
-            // await windowManager.setSize(Size(MediaQuery.of(context).size.width,
-            //     MediaQuery.of(context).size.height));
             await windowManager.show();
           });
 
@@ -55,12 +51,12 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   _checkBaseUrl() async {
-    String? baseUrl = await SessionPreferences().getBaseUrl();
+    // String? baseUrl = await SessionPreferences().getBaseUrl();
+    String? baseUrl = await HiveHelper().getBaseUrl();
 
     if (baseUrl != null) {
       ApiUrl.baseUrl = baseUrl;
     }
-    log('checkbaseUrl');
   }
 
   @override
@@ -76,15 +72,6 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     double deviceWidth = MediaQuery.of(context).size.width;
     double deviceHeight = MediaQuery.of(context).size.height;
-    // windowManager.waitUntilReadyToShow().then((_) async {
-    //   // windowManager.maximize();
-    //   await windowManager.setTitleBarStyle(TitleBarStyle.hidden);
-
-    //   windowManager.center();
-    //   windowManager.setSkipTaskbar(true);
-    //   await windowManager.setSize(const Size(1000, 600));
-    //   await windowManager.show();
-    // });
 
     return Scaffold(
       body: Container(
@@ -115,18 +102,9 @@ class _SplashScreenState extends State<SplashScreen> {
                   fit: BoxFit.fill,
                 ),
               ),
-
-              // const Text(
-              //   'QMS',
-              //   style: TextStyle(
-              //     fontSize: 50,
-              //   ),
-              // ),
               Container(
-                // color: Colors.green,
                 child: Lottie.asset(
                   'assets/animations/loading.json',
-                  // width: deviceWidth * 0.2,
                   height: deviceHeight * 0.3,
                 ),
               ),

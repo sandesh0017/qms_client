@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../core/local/shared_prefence.dart';
+import '../../core/local/storage.dart';
 import '../screens/configure_screen.dart';
 
 Future<dynamic> logOutOnPress(BuildContext context) {
@@ -15,8 +15,8 @@ Future<dynamic> logOutOnPress(BuildContext context) {
               onPressed: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (_) => const ConfigureScreen()));
-                SessionPreferences().clearSession();
-
+                // SessionPreferences().clearSession();
+                HiveHelper().clearSession();
                 // Get.offAll(const LoginScreen(), binding: HomeBinding());
               },
               child: const Text('Yes'),

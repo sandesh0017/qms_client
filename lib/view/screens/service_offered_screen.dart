@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:qms_client/core/constants/colors.dart';
-import 'package:qms_client/core/local/shared_prefence.dart';
+import 'package:qms_client/core/local/storage.dart';
 import 'package:qms_client/core/utils/show_custom_snack_bar.dart';
 import 'package:qms_client/view/screens/pos_printer_screen.dart';
 import 'package:qms_client/view/screens/printer_helper.dart';
@@ -29,26 +29,15 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
   int? kioskIdLocal;
   int? serviceOfferedIdLocal;
   String? serviceCentreName;
-  SessionPreferences sessionPreferences = SessionPreferences();
+  // SessionPreferences sessionPreferences = SessionPreferences();
   bool receiveNewToken = true;
 
   BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
-  //list of bluetooth devices
-  final List<BluetoothDevice> _devices = [];
-  BluetoothDevice? _device;
-  //connection status
-  final bool _connected = false;
-  //instance of sample bluetooth print
-  // PrintSample printSample = PrintSample();
   PrinterHelper printerHelper = PrinterHelper();
-/////////////////////////////////////////////////////////////////////
+
   @override
   void initState() {
     super.initState();
-    // printerHelper.scan();
-    //printerHelper.selectedPrinter
-    //pinter connection huna paryo
-
     getSession().then((value) {
       return getServiceOffered(kioskIdLocal!);
     });
@@ -56,7 +45,11 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
   }
 
   Future<void> getSession() async {
-    var session = await sessionPreferences.getSession();
+    // var session = await sessionPreferences.getSession();
+    // serviceCentreIdCodeLocal = session!.serviceCentreCode;
+    // serviceCentreLocal = session.serviceCentreName;
+    // kioskIdLocal = int.parse(session.koiskIdCode!);
+    var session = await HiveHelper().getSessionHive();
     serviceCentreIdCodeLocal = session!.serviceCentreCode;
     serviceCentreLocal = session.serviceCentreName;
     kioskIdLocal = int.parse(session.koiskIdCode!);
@@ -64,12 +57,15 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
 
   Future<void> getPrinterDetails() async {
     printerHelper.scan();
-    var printerDetail = await sessionPreferences.getPrinterDetails();
+    // var printerDetail = await sessionPreferences.getPrinterDetails();
+    var printerDetail = HiveHelper().getPrinterHive();
     if (printerDetail == null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.push(context,
             MaterialPageRoute(builder: (_) => const PosPrinterScreen()));
       });
+    } else {
+      // showCustomSnackBar(context, "Printer Connected", taskSuccess: true);
     }
     printerHelper.selectedPrinter = printerDetail;
   }
@@ -131,7 +127,6 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
         centerTitle: true,
         title: RichText(
             textAlign: TextAlign.center,
-            // textDirection: ,
             text: const TextSpan(
                 text: 'गण्डकी सरकार\n',
                 style: TextStyle(
@@ -239,52 +234,16 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
                                             } else {
                                               receiveNewToken = true;
                                               showCustomSnackBar(context,
-                                                  'No Printers Connected!',
+                                                  'No Printer Connected! - //${printerHelper.selectedPrinter}//',
                                                   taskSuccess: false);
                                             }
                                           }
-                                          //////////////
                                         : () {},
                                   );
                                 },
                               )
                             : const Center(child: CircularProgressIndicator()),
                       ),
-                      // Text(' Current Token ===>>> $currentToken',
-                      //     style: const TextStyle(fontSize: 40)),
-                      // Text(' service centre ===>>> $serviceCentreIdCodeLocal'),
-                      // DropdownButton(
-                      //     items: _getDeviceItems(),
-                      //     onChanged: (value) => setState(() => _device = value),
-                      //     value: _device),
-                      // Row(
-                      //     crossAxisAlignment: CrossAxisAlignment.center,
-                      //     mainAxisAlignment: MainAxisAlignment.end,
-                      //     children: <Widget>[
-                      //       ElevatedButton(
-                      //           style: ElevatedButton.styleFrom(
-                      //               backgroundColor: Colors.brown),
-                      //           onPressed: () {
-                      //             // initPlatformState();
-                      //           },
-                      //           child: const Text('Refresh',
-                      //               style: TextStyle(color: Colors.white))),
-                      //       const SizedBox(width: 20),
-                      //       ElevatedButton(
-                      //           style: ElevatedButton.styleFrom(
-                      //               backgroundColor:
-                      //                   _connected ? Colors.red : Colors.green),
-                      //           onPressed: _connected ? _disconnect : _connect,
-                      //           child: Text(_connected ? 'Disconnect' : 'Connect',
-                      //               style: const TextStyle(color: Colors.white)))
-                      //     ]),
-                      // TextButton.icon(
-                      //   onPressed: () {
-                      //     printSample.sample(tokenNum: currentToken ?? 'C 100 ');
-                      //   },
-                      //   icon: const Icon(Icons.print),
-                      //   label: const Text('Print'),
-                      // )
                     ],
                   ),
                 ),
@@ -295,13 +254,9 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
               right: 30,
               top: 20,
               child: IconButton(
-                // padding: const EdgeInsets.fromLTRB(0, 40, 50, 0),
                 icon: const Icon(Icons.logout),
                 onPressed: () async {
                   logOutOnPress(context);
-                  // Navigator.push(context,
-                  //     MaterialPageRoute(builder: (_) => const ConfigureScreen()));
-                  // await SessionPreferences().clearSession();
                 },
                 iconSize: 32,
               )),
@@ -327,58 +282,4 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
       ),
     );
   }
-
-///////////////////////////////////////////////////////////////////////
-  ///
-  ///
-  //initializing bluetooth
-
-//   void _connect() {
-//     if (_device != null) {
-//       bluetooth.isConnected.then((isConnected) {
-//         if (isConnected!) {
-//           setState(() {
-//             _connected = true;
-//           });
-//         } else {
-//           bluetooth.connect(_device!).then((value) {
-//             log("$value asd");
-//             setState(() => _connected = true);
-//           }).catchError((error) {
-//             show('Device Already Connected. $error', context: context);
-//             setState(() => _connected = false);
-//           });
-//         }
-//       });
-//     } else {
-//       show('No device selected.', context: context);
-//     }
-//   }
-
-//   void _disconnect() {
-//     bluetooth.disconnect();
-//     setState(() => _connected = false);
-//   }
-
-//   List<DropdownMenuItem<BluetoothDevice>> _getDeviceItems() {
-//     List<DropdownMenuItem<BluetoothDevice>> items = [];
-//     if (_devices.isEmpty) {
-//       items.add(const DropdownMenuItem(child: Text('NONE')));
-//     } else {
-//       for (var device in _devices) {
-//         items.add(
-//             DropdownMenuItem(value: device, child: Text(device.name ?? "")));
-//       }
-//     }
-//     return items;
-//   }
-
-//   Future show(String message,
-//       {Duration duration = const Duration(seconds: 3), context}) async {
-//     await Future.delayed(const Duration(milliseconds: 100));
-//     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-//         content: Text(message, style: const TextStyle(color: Colors.white)),
-//         duration: duration));
-//   }
-// }
 }

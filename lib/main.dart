@@ -1,25 +1,25 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:qms_client/view/screens/splash_screen.dart';
 import 'package:window_manager/window_manager.dart';
+
+import 'core/local/set_session.dart';
 
 void main() async {
   HttpOverrides.global = MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
-
   await windowManager.ensureInitialized();
-
   windowManager.waitUntilReadyToShow().then((_) async {
-    // windowManager.maximize();
     await windowManager.setTitleBarStyle(TitleBarStyle.hidden);
-
     windowManager.center();
     windowManager.setSkipTaskbar(true);
-    // await windowManager.setSize(const Size(1000, 600));
-    await windowManager.show();
   });
-
+  //Hive//
+  await Hive.initFlutter();
+  Hive.registerAdapter(SetSessAdapter());
+  await Hive.openBox('myBox');
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
