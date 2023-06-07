@@ -114,6 +114,39 @@ class HiveHelper {
     }
     return ApiUrl.baseUrl;
   }
+
+  ////////////////////////////GENERIC//////////////////////////////////////
+  setCompanyName({String? companyName}) {
+    Hive.openBox('myBox');
+    Box box = Hive.box('myBox');
+    box.put('companyName', companyName);
+  }
+
+  getCompanyName() {
+    Hive.openBox('myBox');
+    Box box = Hive.box('myBox');
+    String? companyName = box.get('companyName');
+    if (companyName != null) {
+      return companyName;
+    }
+    return null;
+  }
+
+  setCompanyLogo({String? companyLogo}) {
+    Hive.openBox('myBox');
+    Box box = Hive.box('myBox');
+    box.put('logo', companyLogo);
+  }
+
+  getCompanyLogo() {
+    Hive.openBox('myBox');
+    Box box = Hive.box('myBox');
+    String? logo = box.get('logo');
+    if (logo != null) {
+      return logo;
+    }
+    return null;
+  }
 }
 
 /////////////////////////////////////////////   SHARED PREF CODE /////////////////////////////////////////
@@ -169,14 +202,3 @@ class HiveHelper {
   //   SharedPreferences prefs = await _initSharedPreferences();
   //   prefs.setString('baseUrl', baseUrl);
   // }
-
-  // Future<String?> getBaseUrl() async {
-  //   SharedPreferences prefs = await _initSharedPreferences();
-  //   String? baseUrl = prefs.getString('baseUrl');
-  //   if (baseUrl != null) {
-  //     return baseUrl;
-  //   } else {
-  //     return ApiUrl.baseUrl;
-  //   }
-  // }
-// }

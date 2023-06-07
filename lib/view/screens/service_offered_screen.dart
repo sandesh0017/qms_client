@@ -1,5 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:developer';
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:qms_client/core/constants/colors.dart';
 import 'package:qms_client/core/local/storage.dart';
@@ -32,8 +36,15 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
   // SessionPreferences sessionPreferences = SessionPreferences();
   bool receiveNewToken = true;
 
+  HiveHelper hiveHelper = HiveHelper();
+
   BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
   PrinterHelper printerHelper = PrinterHelper();
+
+  File? fileToDisplay;
+  String? fileToDisplayPath;
+  String? nameToDisplay;
+  TextEditingController companyController = TextEditingController();
 
   @override
   void initState() {
@@ -42,6 +53,17 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
       return getServiceOffered(kioskIdLocal!);
     });
     getPrinterDetails();
+    //////////Generic//////////
+    getLogoAndName();
+  }
+
+  getLogoAndName() {
+    dynamic logo = hiveHelper.getCompanyLogo();
+    dynamic name = hiveHelper.getCompanyName();
+    setState(() {
+      nameToDisplay = name;
+      fileToDisplayPath = logo;
+    });
   }
 
   Future<void> getSession() async {
@@ -49,7 +71,7 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
     // serviceCentreIdCodeLocal = session!.serviceCentreCode;
     // serviceCentreLocal = session.serviceCentreName;
     // kioskIdLocal = int.parse(session.koiskIdCode!);
-    var session = await HiveHelper().getSessionHive();
+    var session = await hiveHelper.getSessionHive();
     serviceCentreIdCodeLocal = session!.serviceCentreCode;
     serviceCentreLocal = session.serviceCentreName;
     kioskIdLocal = int.parse(session.koiskIdCode!);
@@ -58,7 +80,7 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
   Future<void> getPrinterDetails() async {
     printerHelper.scan();
     // var printerDetail = await sessionPreferences.getPrinterDetails();
-    var printerDetail = HiveHelper().getPrinterHive();
+    var printerDetail = hiveHelper.getPrinterHive();
     if (printerDetail == null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.push(context,
@@ -104,6 +126,21 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
     }
   }
 
+  void _filePicker() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform
+          .pickFiles(type: FileType.image, allowMultiple: false);
+      if (result == null) return;
+      PlatformFile file = result.files.first;
+      fileToDisplay = File(file.path.toString());
+      hiveHelper.setCompanyLogo(companyLogo: file.path.toString());
+      fileToDisplayPath = file.path.toString();
+      setState(() {});
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -114,54 +151,115 @@ class ServiceOfferedScreenState extends State<ServiceOfferedScreen> {
         leadingWidth: 200,
         toolbarHeight: 150,
         backgroundColor: AppColor.secondaryColor,
-        leading: SizedBox(
-          height: 10,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Image.asset(
-              'assets/images/logo2.png',
-              scale: 1,
+        leading: GestureDetector(
+          onLongPress: () {
+            _filePicker();
+          },
+          child: SizedBox(
+            height: 10,
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: fileToDisplayPath == null
+                  ? Image.asset(
+                      'assets/images/your_logo.png',
+                      scale: 1,
+                    )
+                  : Image.file(File(fileToDisplayPath!)),
             ),
           ),
         ),
+        // SizedBox(
+        //   height: 10,
+        //   child: Padding(
+        //     padding: const EdgeInsets.all(8.0),
+        //     child: Image.asset(
+        //       'assets/images/logo2.png',
+        //       scale: 1,
+        //     ),
+        //   ),
+        // ),
         centerTitle: true,
-        title: RichText(
+        title: GestureDetector(
+          onLongPress: () {
+            showDialog(
+              context: context,
+              barrierDismissible: true,
+              builder: (_) {
+                return AlertDialog(
+                  title: const Text('Company Name'),
+                  // content: Text("Please Select Company Name ?"),
+                  content: TextField(
+                    controller: companyController,
+                  ),
+                  actions: [
+                    MaterialButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text("CANCEL"),
+                    ),
+                    MaterialButton(
+                      onPressed: () {
+                        setState(() {
+                          nameToDisplay = companyController.text;
+                        });
+                        hiveHelper.setCompanyName(
+                            companyName: companyController.text);
+                        Navigator.pop(context);
+                      },
+                      child: const Text("OK"),
+                    )
+                  ],
+                );
+              },
+            );
+          },
+          child: Container(
+              child: Text(
+            nameToDisplay == null || nameToDisplay == ""
+                ? 'Company Name\n Here'
+                : nameToDisplay ?? 'Name Here',
+            style: const TextStyle(fontSize: 30, color: Colors.white),
             textAlign: TextAlign.center,
-            text: const TextSpan(
-                text: 'गण्डकी सरकार\n',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w500),
-                children: [
-                  TextSpan(
-                    text:
-                        'भौतिक पूर्वाधार विकास तथा यातायात व्यवस्था मन्त्रालय\n',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 19,
-                        fontWeight: FontWeight.w600),
-                  ),
-                  TextSpan(
-                    text: 'यातायात व्यवस्था कार्यालय सवारी चालक अनुमतिपत्र\n',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
-                        fontWeight: FontWeight.w600),
-                  ),
-                  TextSpan(
-                    text: 'कास्की\nगण्डकी प्रदेश, नेपाल',
-                    style: TextStyle(color: Colors.white, fontSize: 16),
-                  ),
-                ])),
+          )),
+        ),
+        // title: RichText(
+        //     textAlign: TextAlign.center,
+        //     text: const TextSpan(
+        //         text: 'गण्डकी सरकार\n',
+        //         style: TextStyle(
+        //             color: Colors.white,
+        //             fontSize: 17,
+        //             fontWeight: FontWeight.w500),
+        //         children: [
+        //           TextSpan(
+        //             text:
+        //                 'भौतिक पूर्वाधार विकास तथा यातायात व्यवस्था मन्त्रालय\n',
+        //             style: TextStyle(
+        //                 color: Colors.white,
+        //                 fontSize: 19,
+        //                 fontWeight: FontWeight.w600),
+        //           ),
+        //           TextSpan(
+        //             text: 'यातायात व्यवस्था कार्यालय सवारी चालक अनुमतिपत्र\n',
+        //             style: TextStyle(
+        //                 color: Colors.white,
+        //                 fontSize: 22,
+        //                 fontWeight: FontWeight.w600),
+        //           ),
+        //           TextSpan(
+        //             text: 'कास्की\nगण्डकी प्रदेश, नेपाल',
+        //             style: TextStyle(color: Colors.white, fontSize: 16),
+        //           ),
+        //         ])),
         actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Image.asset(
-              'assets/images/logo1.png',
-              scale: 1,
-            ),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.all(8.0),
+          //   child: Image.asset(
+          //     'assets/images/logo1.png',
+          //     scale: 1,
+          //   ),
+          // ),
           Padding(
             padding: const EdgeInsets.all(32.0),
             child: Image.asset('assets/animations/flag.gif'),
