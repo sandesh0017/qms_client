@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:esc_pos_utils/esc_pos_utils.dart';
@@ -21,8 +20,6 @@ class PrinterHelper {
   StreamSubscription<BTStatus>? _subscriptionBtStatus;
   StreamSubscription<USBStatus>? _subscriptionUsbStatus;
   final BTStatus _currentStatus = BTStatus.none;
-  // currentUsbStatus is only supports on Android
-  // ignore: unused_field
   final USBStatus currentUsbStatus = USBStatus.none;
   List<int>? pendingTask;
   String _ipAddress = '';
@@ -38,56 +35,6 @@ class PrinterHelper {
   }
 
   PrinterHelper._();
-
-  // initPrinterServices() {
-  //   if (Platform.isWindows) defaultPrinterType = PrinterType.usb;
-  //   _portController.text = _port;
-  //   _scan();
-
-  //   // subscription to listen change status of bluetooth connection
-  //   _subscriptionBtStatus =
-  //       PrinterManager.instance.stateBluetooth.listen((status) {
-  //     log(' ----------------- status bt $status ------------------ ');
-  //     _currentStatus = status;
-  //     if (status == BTStatus.connected) {
-  //       setState(() {
-  //         _isConnected = true;
-  //       });
-  //     }
-  //     if (status == BTStatus.none) {
-  //       setState(() {
-  //         _isConnected = false;
-  //       });
-  //     }
-  //     if (status == BTStatus.connected && pendingTask != null) {
-  //       if (Platform.isAndroid) {
-  //         Future.delayed(const Duration(milliseconds: 1000), () {
-  //           PrinterManager.instance
-  //               .send(type: PrinterType.bluetooth, bytes: pendingTask!);
-  //           pendingTask = null;
-  //         });
-  //       } else if (Platform.isIOS) {
-  //         PrinterManager.instance
-  //             .send(type: PrinterType.bluetooth, bytes: pendingTask!);
-  //         pendingTask = null;
-  //       }
-  //     }
-  //   });
-  //   //  PrinterManager.instance.stateUSB is only supports on Android
-  //   _subscriptionUsbStatus = PrinterManager.instance.stateUSB.listen((status) {
-  //     log(' ----------------- status usb $status ------------------ ');
-  //     currentUsbStatus = status;
-  //     if (Platform.isAndroid) {
-  //       if (status == USBStatus.connected && pendingTask != null) {
-  //         Future.delayed(const Duration(milliseconds: 1000), () {
-  //           PrinterManager.instance
-  //               .send(type: PrinterType.usb, bytes: pendingTask!);
-  //           pendingTask = null;
-  //         });
-  //       }
-  //     }
-  //   });
-  // }
 
   // method to scan devices according PrinterType
   void scan() {
@@ -142,8 +89,6 @@ class PrinterHelper {
     }
 
     selectedPrinter = device;
-    //BluetoothPrinter in storage
-    //save this instance to storage
   }
 
   Future printReceiveTest(
@@ -154,19 +99,10 @@ class PrinterHelper {
     String time = DateFormat("hh:mm:ss").format(now);
     List<int> bytes = [];
 
-    // Xprinter XP-N160I
     final profile = await CapabilityProfile.load(name: 'XP-N160I');
-    // PaperSize.mm80 or PaperSize.mm58
+
     if (currentToken == null) return;
     final generator = Generator(PaperSize.mm80, profile);
-    // bytes += generator.setGlobalCodeTable('U+0938');
-    // bytes += generator.text('स',
-    //     linesAfter: 0,
-    //     styles: const PosStyles(
-    //         codeTable: '',
-    //         align: PosAlign.center,
-    //         height: PosTextSize.size2,
-    //         width: PosTextSize.size1));
     bytes += generator.text('Nepal Police Hospital',
         linesAfter: 0,
         styles: const PosStyles(
@@ -212,19 +148,6 @@ class PrinterHelper {
             align: PosAlign.center,
             height: PosTextSize.size1,
             width: PosTextSize.size1));
-    // bytes += generator.text(
-    //     'Note: Please be present at the office by 2:30 PM for all services',
-    //     linesAfter: 0,
-    //     styles: const PosStyles(
-    //         align: PosAlign.center,
-    //         height: PosTextSize.size1,
-    //         width: PosTextSize.size1));
-    // String assetName = 'assets/images/logoo.jpg';
-    // Uint8List imageBytes = await getImageAssetByteData(assetName);
-    // final image = await ImageLoader.loadFromMemory(imageData);
-    // print(imageBytes);
-    // Image image = Image.memory(imageBytes);
-    // Using `ESC *`//=================================================================
 // final ByteData logoBytes = await rootBundle.load('assets/logo.jpg');
 //     receiptText.addImage(
 //       base64.encode(Uint8List.view(logoBytes.buffer)),
@@ -346,38 +269,5 @@ class PrinterHelper {
     _subscriptionUsbStatus?.cancel();
     _portController.dispose();
     _ipController.dispose();
-  }
-
-  String toNepali(String input) {
-    final Map<String, String> nepaliDigits = {
-      '0': 'o',
-      '1': '१',
-      '2': '२',
-      '3': '३',
-      '4': '४',
-      '5': '५',
-      '6': '६',
-      '7': '७',
-      '8': '८',
-      '9': '९',
-    };
-
-    final List<String> parts = input.split('-');
-    log('parts==>$parts');
-    final StringBuffer buffer = StringBuffer();
-    log('buffer==>$buffer');
-
-    var writebufffer = buffer.write(parts[0]);
-    buffer.write('-');
-
-    final String digits = parts[1];
-    log('digitsssss$digits');
-    for (int i = 0; i < digits.length; i++) {
-      final String digit = digits[i];
-      log('digit$digit');
-      buffer.write(nepaliDigits[digit]);
-    }
-    log('bufferTOOSTring${buffer.toString()}');
-    return buffer.toString();
   }
 }

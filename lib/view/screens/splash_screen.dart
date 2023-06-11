@@ -42,8 +42,6 @@ class _SplashScreenState extends State<SplashScreen> {
         MaterialPageRoute(builder: (context) {
           windowManager.waitUntilReadyToShow().then((_) async {
             windowManager.maximize();
-            // await windowManager.setSize(Size(MediaQuery.of(context).size.width,
-            //     MediaQuery.of(context).size.height));
             await windowManager.show();
           });
 
@@ -76,16 +74,6 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     double deviceWidth = MediaQuery.of(context).size.width;
     double deviceHeight = MediaQuery.of(context).size.height;
-    // windowManager.waitUntilReadyToShow().then((_) async {
-    //   // windowManager.maximize();
-    //   await windowManager.setTitleBarStyle(TitleBarStyle.hidden);
-
-    //   windowManager.center();
-    //   windowManager.setSkipTaskbar(true);
-    //   await windowManager.setSize(const Size(1000, 600));
-    //   await windowManager.show();
-    // });
-
     return Scaffold(
       body: Container(
         color: Colors.white,
@@ -115,18 +103,9 @@ class _SplashScreenState extends State<SplashScreen> {
                   fit: BoxFit.fill,
                 ),
               ),
-
-              // const Text(
-              //   'QMS',
-              //   style: TextStyle(
-              //     fontSize: 50,
-              //   ),
-              // ),
               Container(
-                // color: Colors.green,
                 child: Lottie.asset(
                   'assets/animations/loading.json',
-                  // width: deviceWidth * 0.2,
                   height: deviceHeight * 0.3,
                 ),
               ),
